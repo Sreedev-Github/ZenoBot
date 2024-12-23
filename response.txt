@@ -1,0 +1,110 @@
+Detailed Prompt
+{
+    "transportation": {
+      "mode": "train",
+      "type": "Shimla Toy Train",
+      "departure_time": "9:00 AM",
+      "arrival_time": "4:30 PM"
+    },
+    "attractions": [
+      {
+        "name": "Jakhoo Temple",
+        "description": "A historic temple dedicated to Lord Hanuman, offering stunning views of Shimla from its upper deck.",
+        "opening_hours": "9:00 AM - 7:00 PM",
+        "entry_fee": "50"
+      },
+      {
+        "name": "Christ Church",
+        "description": "One of the oldest churches in the British Empire, built in 1857 and featuring stunning architecture.",
+        "opening_hours": "9:00 AM - 5:00 PM",
+        "entry_fee": "20"
+      }
+    ],
+    "accommodation":
+    {
+      "name": "Hotel Royal Plaza",
+      "type": "budget",
+      "rating": 4.2,
+      "address": "Shimla, Himachal Pradesh"
+    },
+    "dining":
+    {
+      "name": "The Residency",
+      "type": "mid-range",
+      "cuisine": "Indian",
+      "menu": [
+        {
+          "dish": "Butter Chicken",
+          "price": 250
+        },
+        {
+          "dish": "Palak Paneer",
+          "price": 300
+        }
+      ]
+    },
+    "local_experience":
+    {
+      "activity": "Take a stroll through the famous Mall Road, visit the Shimla State Museum, and enjoy the scenic views of the surrounding mountains.",
+      "duration": "4-5 hours"
+    }
+  }
+
+{
+  "day1": {
+    "transportation": {
+      "mode": "bus",
+      "type": "Himachal Roadways"
+    },
+    "attractions": [
+      {
+        "name": "Kufri Fun World",
+        "description": ""
+      },
+      {
+        "name": "Jakhu Temple",
+        "description": ""
+      }
+    ],
+    "accommodation": {
+      "name": "Hotel Grand Heritage",
+      "type": "luxury"
+    },
+    "dining": {
+      "name": "The Old World Bakery & Café",
+      "cuisine": "Western"
+    },
+    "local_experience": {
+      "activity": "",
+      "duration": ""
+    }
+  },
+  "day2": {
+    "transportation": {
+      "mode": "train",
+      "type": "Shimla Toy Train"
+    },
+    "attractions": [
+      {
+        "name": "Christ Church",
+        "description": ""
+      },
+      {
+        "name": "Shimla State Museum",
+        "description": ""
+      }
+    ],
+    "accommodation": {
+      "name": "Hotel Royal Plaza",
+      "type": "budget"
+    },
+    "dining": {
+      "name": "The Residency",
+      "cuisine": "Indian"
+    },
+    "local_experience": {
+      "activity": "",
+      "duration": ""
+    }
+  }
+}
