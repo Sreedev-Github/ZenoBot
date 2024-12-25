@@ -102,6 +102,141 @@ Detailed Prompt
       "name": "The Residency",
       "cuisine": "Indian"
     },
+
+
+ChatGPT version
+{
+  "itinerary": {
+    "day_1": [
+      {
+        "time": "06:00 AM",
+        "place": "Delhi",
+        "activity": "Departure to Shimla",
+        "description": "Catch a morning train or private car from Delhi to Shimla. The 7-8 hour journey offers scenic views of the hills as you leave behind the cityscape and move towards the tranquil mountains."
+      },
+      {
+        "time": "02:00 PM",
+        "place": "Shimla",
+        "activity": "Check-in at Hotel",
+        "description": "Arrive at your hotel in Shimla, check-in, and freshen up. Recommended options include Hotel Willow Banks for luxury or Hotel Himland for a budget-friendly option."
+      },
+      {
+        "time": "03:30 PM",
+        "place": "The Ridge",
+        "activity": "Stroll around The Ridge",
+        "description": "Enjoy a leisurely walk on The Ridge, a large open space with panoramic views of the surrounding mountains. A great spot to relax and take in the cool air."
+      },
+      {
+        "time": "05:00 PM",
+        "place": "Mall Road",
+        "activity": "Shopping and Exploring Mall Road",
+        "description": "Mall Road is the heartbeat of Shimla, lined with shops, cafes, and restaurants. Perfect for picking up souvenirs and enjoying local snacks like Chana Chaat."
+      },
+      {
+        "time": "07:00 PM",
+        "place": "Cafe Simla Times",
+        "activity": "Dinner at Cafe Simla Times",
+        "description": "Located on Mall Road, this cozy café offers a variety of cuisines and a relaxing ambiance, perfect to unwind after a day of travel."
+      }
+    ],
+    "day_2": [
+      {
+        "time": "08:00 AM",
+        "place": "Hotel",
+        "activity": "Breakfast at Hotel",
+        "description": "Start your day with a hearty breakfast at the hotel, fueling up for the day's exploration."
+      },
+      {
+        "time": "09:30 AM",
+        "place": "Jakhoo Temple",
+        "activity": "Visit Jakhoo Temple",
+        "description": "Located on the highest peak in Shimla, Jakhoo Temple is dedicated to Lord Hanuman. The hike up provides stunning views of the town and the surrounding mountains."
+      },
+      {
+        "time": "11:00 AM",
+        "place": "Shimla Heritage Museum",
+        "activity": "Explore Shimla Heritage Museum",
+        "description": "This small but informative museum displays the history and culture of Shimla, including its colonial past, architecture, and local traditions."
+      },
+      {
+        "time": "01:00 PM",
+        "place": "The Mall Road",
+        "activity": "Lunch at Indian Coffee House",
+        "description": "Experience nostalgic charm with a traditional lunch at the Indian Coffee House, a throwback to the colonial era."
+      },
+      {
+        "time": "02:30 PM",
+        "place": "Kufri",
+        "activity": "Visit Kufri",
+        "description": "Located about 16 km from Shimla, Kufri is famous for its adventure sports and offers a beautiful view of the Himalayas. You can try skiing, tobogganing, or simply enjoy the scenery."
+      },
+      {
+        "time": "05:00 PM",
+        "place": "Shimla",
+        "activity": "Return to Hotel and Relax",
+        "description": "Head back to Shimla and relax at your hotel before preparing for your journey back."
+      },
+      {
+        "time": "06:30 PM",
+        "place": "Shimla",
+        "activity": "Departure to Delhi",
+        "description": "Begin your return journey to Delhi, either by train or private transport. The journey will offer a chance to reflect on your memorable Shimla trip."
+      }
+    ]
+  },
+  "transportation": {
+    "from_delhi_to_shimla": {
+      "options": [
+        {
+          "type": "Train",
+          "details": "Take the Kalka-Shimla Toy Train for a scenic experience. The journey takes around 7 hours and provides panoramic views."
+        },
+        {
+          "type": "Private Car",
+          "details": "Private car hire takes around 7-8 hours and provides flexibility in stops and comfort."
+        },
+        {
+          "type": "Volvo Bus",
+          "details": "Volvo buses from Delhi to Shimla offer a comfortable and cost-effective option. The journey takes around 8 hours."
+        }
+      ]
+    },
+    "from_shimla_to_delhi": {
+      "options": [
+        {
+          "type": "Train",
+          "details": "Return by the Kalka-Shimla Toy Train or a regular express train from Kalka to Delhi, which takes approximately 7 hours."
+        },
+        {
+          "type": "Private Car",
+          "details": "Private car return provides flexibility but takes 7-8 hours."
+        },
+        {
+          "type": "Volvo Bus",
+          "details": "Volvo buses are also available for return and are comfortable for long journeys."
+        }
+      ]
+    }
+  },
+  "accommodation": {
+    "hotel_options": [
+      {
+        "name": "Hotel Willow Banks",
+        "price_range": "₹5000-₹8000 per night",
+        "description": "A luxury hotel located on Mall Road with beautiful views and modern amenities."
+      },
+      {
+        "name": "Hotel Himland",
+        "price_range": "₹3000-₹5000 per night",
+        "description": "A budget-friendly hotel offering comfort and convenience, located slightly away from the main hustle."
+      }
+    ]
+  },
+  "recommendations": {
+    "weather_guide": "December to February offers a chance to enjoy snowfall in Shimla, but be prepared for cold weather. Summers (March to June) are ideal for sightseeing and outdoor activities.",
+    "local_cuisine": "Try local dishes like Chana Chaat, Sidu, and Himachali Dham during your visit to Shimla."
+  }
+}
     "local_experience": {
       "activity": "",
       "duration": ""
