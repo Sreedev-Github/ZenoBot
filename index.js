@@ -18,15 +18,16 @@ router.post('/ask-query', async (req, res) => {
 
   try {
     // Send request to the Ollama model
-    const response = await ollama.chat({
+    const response = await ollama.generate({
       model: 'zenobot01', // Ensure the model name matches your live model
-      messages: [{ role: 'user', content: query }],
+      prompt: query,
+      // messages: [{ role: 'user', content: query }],
     });
     console.log(response);
     
 
     // Respond with the model's reply
-    res.json({ reply: response.message.content });
+    res.json({ reply: response.response });
   } catch (error) {
     console.error("Error interacting with the model:", error.message);
     res.status(500).send({ error: 'Model not found or server error' });
