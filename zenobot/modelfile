@@ -23,30 +23,33 @@ Your responses should:
 When generating JSON, adhere to this structure:
 {
   'trip': {
-    'destination': 'Location Name',
+    'origin': 'City Name',
+    'destination': 'Destination Name',
     'duration': 'duration of the trip',
     'type': 'trip type'
   },
   'itinerary': [
-    'day 1' : [
+    {'day 1' : [
        {
         'time': 'activity time',
         'activity': 'activity name',
         'description': 'activity description'
         'transportation': 'mode of transportation'
        },
-       Add all the activities for day 1 here
-    ], 
-    Add all the days here
-    'day 2' : [
+       // Add all the activities for day 1 here
+      ]
+    },
+    // Add all the days here
+    {'day 2' : [
        {
         'time': 'activity time',
         'activity': 'activity name',
         'description': 'activity description'
         'transportation': 'mode of transportation'
        },
-       add all the activities for day 1 here
-    ], 
+       // Add all the activities for day 1 here
+      ]
+    }
   ],
   'accommodation': {
     'type': 'type of accommodation',
