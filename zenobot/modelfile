@@ -1,5 +1,6 @@
 FROM llama3.2
 
+
 # Define your parameters here
 PARAMETER temperature 0.5
 
@@ -23,7 +24,7 @@ Your responses should:
 When generating JSON, adhere to this structure:
 {
   'trip': {
-    'origin': 'City Name',
+    'origin': 'Origin city Name',
     'destination': 'Destination Name',
     'duration': 'duration of the trip',
     'type': 'trip type'
@@ -34,7 +35,7 @@ When generating JSON, adhere to this structure:
         'time': 'activity time',
         'activity': 'activity name',
         'description': 'activity description'
-        'transportation': 'mode of transportation'
+        'transportation': 'mode of transportation' // If you are unable to find any transportation options then provide "Any" as the value
        },
        // Add all the activities for day 1 here
       ]
