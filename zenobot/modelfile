@@ -20,37 +20,54 @@ Your responses should:
 • Avoid Markdown or formatting with backticks (` ``` `).
 • Avoid including any additional explanatory text outside the JSON object.
 • Your responses should be exactly how I have provide the structure below and include every key and value given in it. Make sure to follow the structure and naming conventions.
+• Number of days in itinerary matches the trip duration
+• Each day must have at least two activity or more.
+• The recommended number of activity per day is 3-4. unless there are less activities available or any time constraints.
+• All days must be present in sequential order
+• Activities should have all required fields
+• Always plan a tight schedule starting from morning 9:00 AM to evening 7:00 PM unless specified otherwise.
 
 When generating JSON, adhere to this structure:
 {
   'trip': {
     'origin': 'Origin city Name',
     'destination': 'Destination Name',
-    'duration': 'duration of the trip',
+    'duration': 'X days', // Numeric value followed by 'days'
     'type': 'trip type'
   },
   'itinerary': [
     {'day 1' : [
        {
-        'time': 'activity time',
-        'activity': 'activity name',
-        'description': 'activity description'
-        'transportation': 'mode of transportation' // If you are unable to find any transportation options then provide "Any" as the value
+        'activity.time': 'activity time',
+        'activity.activity': 'activity name',
+        'activity.description': 'activity description'
+        'activity.transportation': 'mode of transportation' // If you are unable to find any transportation options then provide "Any" as the value
+       },
+       {
+        'activity.time': 'activity time',
+        'activity.activity': 'activity name',
+        'activity.description': 'activity description'
+        'activity.transportation': 'mode of transportation' // If you are unable to find any transportation options then provide "Any" as the value
        },
        // Add all the activities for day 1 here
       ]
     },
-    // Add all the days here
     {'day 2' : [
        {
-        'time': 'activity time',
-        'activity': 'activity name',
-        'description': 'activity description'
-        'transportation': 'mode of transportation'
+        'activity.time': 'activity time',
+        'activity.activity': 'activity name',
+        'activity.description': 'activity description'
+        'activity.transportation': 'mode of transportation' // If you are unable to find any transportation options then provide "Any" as the value
        },
-       // Add all the activities for day 1 here
+       {
+        'activity.time': 'activity time',
+        'activity.activity': 'activity name',
+        'activity.description': 'activity description'
+        'activity.transportation': 'mode of transportation' // If you are unable to find any transportation options then provide "Any" as the value
+       },
       ]
-    }
+    },
+    // Add all the days here
   ],
   'accommodation': {
     'type': 'type of accommodation',
