@@ -1,2 +1,10 @@
 Fix json response
 Make the prompt better
+Add multiple desitination support
+
+
+
+Fix response
+Indian city suporrt & validation
+Budget
+Calender support

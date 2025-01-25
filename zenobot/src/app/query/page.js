@@ -1,6 +1,5 @@
 "use client";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import {
   MapPin,
@@ -21,48 +20,16 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {} from "lucide-react";
+import states from "@/utils/stateCities.json"; // Ensure correct import path
+import { Input } from "@/components/ui/input";
 
-const states = [
-  "Andhra Pradesh",
-  "Arunachal Pradesh",
-  "Assam",
-  "Bihar",
-  "Chhattisgarh",
-  "Delhi",
-  "Goa",
-  "Gujarat",
-  "Haryana",
-  "Himachal Pradesh",
-  "Jammu and Kashmir",
-  "Jharkhand",
-  "Karnataka",
-  "Kerala",
-  "Ladakh",
-  "Madhya Pradesh",
-  "Maharashtra",
-  "Manipur",
-  "Meghalaya",
-  "Mizoram",
-  "Nagaland",
-  "Odisha",
-  "Punjab",
-  "Rajasthan",
-  "Sikkim",
-  "Tamil Nadu",
-  "Telangana",
-  "Tripura",
-  "Uttar Pradesh",
-  "Uttarakhand",
-  "West Bengal",
-].sort();
-
-console.log(states);
+// Console log to verify data
+// console.log('States data:', states);
 
 export default function QueryPage() {
   const [response, setResponse] = useState(null);
@@ -71,6 +38,69 @@ export default function QueryPage() {
   const [days, setDays] = useState("");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [fromInput, setFromInput] = useState("");
+  const [toInput, setToInput] = useState("");
+  const [fromSearch, setFromSearch] = useState("");
+  const [toSearch, setToSearch] = useState("");
+  const [showFromDropdown, setShowFromDropdown] = useState(false);
+  const [showToDropdown, setShowToDropdown] = useState(false);
+
+  // Update getAllCityStateOptions
+  const getAllCityStateOptions = useMemo(() => {
+    try {
+      const options = [];
+      console.log('Processing states:', states); // Debug log
+      if (states && typeof states === 'object') {
+        Object.entries(states).forEach(([state, cities]) => {
+          if (Array.isArray(cities)) {
+            cities.forEach((city, index) => {
+              options.push({ key: `${city}, ${state}-${index}`, value: `${city}, ${state}` });
+            });
+          }
+        });
+      }
+      console.log('Generated options:', options); // Debug log
+      return options;
+    } catch (error) {
+      console.error('Error processing states:', error);
+      return [];
+    }
+  }, []);
+
+  const getFilteredLocations = (searchTerm) => {
+    if (!searchTerm) return [];
+    return getAllCityStateOptions.filter(location =>
+      location.value.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".relative")) {
+        setShowFromDropdown(false);
+        setShowToDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFromSearch(fromInput);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [fromInput]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setToSearch(toInput);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, [toInput]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -104,7 +134,7 @@ export default function QueryPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[url('/travel-pattern.png')] bg-cover bg-fixed">
+    <div className="min-h-screen bg-[url('/travel-pattern.jpg')] bg-cover bg-fixed">
       <div className="min-h-screen bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-8">
           {/* Hero Section */}
@@ -123,61 +153,81 @@ export default function QueryPage() {
               <form onSubmit={onSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {/* From Location */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative">
                     <label className="flex items-center text-sm font-medium text-gray-300">
                       <MapPin className="w-4 h-4 mr-2" />
                       From
                     </label>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start text-left font-normal border border-white/20 bg-white/5 hover:bg-white/10 text-white"
-                        >
-                          {from || "Select Origin"}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-white border border-white/20">
-                        {states.map((state) => (
-                          <DropdownMenuItem
-                            key={state}
-                            onClick={() => setFrom(state)}
-                            className="hover:bg-slate-700 hover:text-white"
-                          >
-                            {state}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        value={fromInput}
+                        onChange={(e) => {
+                          setFromInput(e.target.value);
+                          setShowFromDropdown(true);
+                        }}
+                        className="w-full border border-white/20 bg-white/5 text-white"
+                        placeholder="Search city..."
+                      />
+                      {showFromDropdown && (
+                        <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-gray-800 border border-white/20 rounded-md z-[100]">
+                          {getFilteredLocations(fromSearch).length > 0 ? (
+                            getFilteredLocations(fromSearch).map((location) => (
+                              <div
+                                key={location.key}
+                                className="px-4 py-2 hover:bg-white/10 cursor-pointer text-white"
+                                onClick={() => {
+                                  setFrom(location.value);
+                                  setFromInput(location.value);
+                                  setShowFromDropdown(false);
+                                }}
+                              >
+                                {location.value}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="px-4 py-2 text-gray-400">No matches found</div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* To Location */}
-                  <div className="space-y-2">
+                  <div className="space-y-2 relative">
                     <label className="flex items-center text-sm font-medium text-gray-300">
                       <Plane className="w-4 h-4 mr-2" />
                       To
                     </label>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start text-left font-normal border border-white/20 bg-white/5 hover:bg-white/10 text-white"
-                        >
-                          {to || "Select Destination"}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-white border border-white/20">
-                        {states.map((state) => (
-                          <DropdownMenuItem
-                            key={state}
-                            onClick={() => setTo(state)}
-                            className="hover:bg-slate-700 hover:text-white"
-                          >
-                            {state}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="relative">
+                      <Input
+                        type="text"
+                        value={toInput}
+                        onChange={(e) => {
+                          setToInput(e.target.value);
+                          setShowToDropdown(true);
+                        }}
+                        className="w-full border border-white/20 bg-white/5 text-white"
+                        placeholder="Search city..."
+                      />
+                      {showToDropdown && toInput && (
+                        <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-gray-800 border border-white/20 rounded-md z-50">
+                          {getFilteredLocations(toSearch).map((location) => (
+                            <div
+                              key={location.key}
+                              className="px-4 py-2 hover:bg-white/10 cursor-pointer text-white"
+                              onClick={() => {
+                                setTo(location.value);
+                                setToInput(location.value);
+                                setShowToDropdown(false);
+                              }}
+                            >
+                              {location.value}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Days Selection */}
@@ -245,7 +295,6 @@ export default function QueryPage() {
                       const tripDays = parseInt(
                         travelPlan.trip.duration.split(" ")[0]
                       );
-                      const availableDays = travelPlan.itinerary.length;
 
                       return (
                         <>
@@ -349,7 +398,10 @@ export default function QueryPage() {
                                   {JSON.parse(response).accommodation.location}
                                 </span>
                               </div>
-                              <Badge className="mt-2 text-white" variant="outline">
+                              <Badge
+                                className="mt-2 text-white"
+                                variant="outline"
+                              >
                                 {JSON.parse(response).accommodation.type}
                               </Badge>
                             </CardContent>
