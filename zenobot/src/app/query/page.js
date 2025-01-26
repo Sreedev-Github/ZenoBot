@@ -4,18 +4,13 @@ import { Button } from "@/components/ui/button";
 import {
   MapPin,
   Plane,
-  Calendar,
+  CalendarIcon,
   Loader2,
   Clock,
   Bus,
   Train,
+  IndianRupee,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Card,
   CardContent,
@@ -23,10 +18,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { addDays, format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import {} from "lucide-react";
 import states from "@/utils/stateCities.json"; // Ensure correct import path
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 // Console log to verify data
 // console.log('States data:', states);
@@ -36,40 +38,46 @@ export default function QueryPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [days, setDays] = useState("");
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [budget, setBudget] = useState("");
   const [fromInput, setFromInput] = useState("");
   const [toInput, setToInput] = useState("");
   const [fromSearch, setFromSearch] = useState("");
   const [toSearch, setToSearch] = useState("");
   const [showFromDropdown, setShowFromDropdown] = useState(false);
   const [showToDropdown, setShowToDropdown] = useState(false);
+  const [date, setDate] = useState({
+    from: new Date(),
+    to: addDays(new Date(), 7),
+  });
 
   // Update getAllCityStateOptions
   const getAllCityStateOptions = useMemo(() => {
     try {
       const options = [];
-      console.log('Processing states:', states); // Debug log
-      if (states && typeof states === 'object') {
+      // console.log('Processing states:', states);
+      if (states && typeof states === "object") {
         Object.entries(states).forEach(([state, cities]) => {
           if (Array.isArray(cities)) {
             cities.forEach((city, index) => {
-              options.push({ key: `${city}, ${state}-${index}`, value: `${city}, ${state}` });
+              options.push({
+                key: `${city}, ${state}-${index}`,
+                value: `${city}, ${state}`,
+              });
             });
           }
         });
       }
-      console.log('Generated options:', options); // Debug log
+      // console.log('Generated options:', options);
       return options;
     } catch (error) {
-      console.error('Error processing states:', error);
+      console.error("Error processing states:", error);
       return [];
     }
   }, []);
 
   const getFilteredLocations = (searchTerm) => {
     if (!searchTerm) return [];
-    return getAllCityStateOptions.filter(location =>
+    return getAllCityStateOptions.filter((location) =>
       location.value.toLowerCase().includes(searchTerm.toLowerCase())
     );
   };
@@ -90,7 +98,7 @@ export default function QueryPage() {
     const timer = setTimeout(() => {
       setFromSearch(fromInput);
     }, 300);
-    
+
     return () => clearTimeout(timer);
   }, [fromInput]);
 
@@ -98,20 +106,24 @@ export default function QueryPage() {
     const timer = setTimeout(() => {
       setToSearch(toInput);
     }, 300);
-    
+
     return () => clearTimeout(timer);
   }, [toInput]);
+   
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!from || !to || !days) {
+    if (!fromInput || !toInput || !date || !budget) {
       setError("Please fill in all fields");
       return;
     }
     setLoading(true);
     setError(null);
 
-    const query = `I am planning a travel to ${to} from ${from}, can you help you plan the trip in India as I am only planning a ${days} day trip and will be taking a flight for travel. Take the values as you please ... and suggest me with random values that you please, make sure the trip planning is not detailed. Please do not ask any questions.`;
+    const query = `I am planning a travel in India, from ${fromInput} to ${toInput}. Could you please help me plan the trip from ${date.from} to ${date.to}. Please suggest me the best places to visit, activities to do, food to eat, and accommodation. I would like a detailed itenarary for each day.`;
+
+    console.log(query);
+    
 
     try {
       const res = await fetch("/api/ask-query", {
@@ -148,10 +160,10 @@ export default function QueryPage() {
           </div>
 
           {/* Form Section */}
-          <div className="max-w-4xl mx-auto mt-8">
+          <div className="max-w-6xl mx-auto mt-8">
             <div className="backdrop-blur-xl bg-white/10 p-8 rounded-2xl shadow-2xl border border-white/20">
               <form onSubmit={onSubmit} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                   {/* From Location */}
                   <div className="space-y-2 relative">
                     <label className="flex items-center text-sm font-medium text-gray-300">
@@ -168,6 +180,7 @@ export default function QueryPage() {
                         }}
                         className="w-full border border-white/20 bg-white/5 text-white"
                         placeholder="Search city..."
+                        disabled={loading}
                       />
                       {showFromDropdown && (
                         <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-gray-800 border border-white/20 rounded-md z-[100]">
@@ -177,7 +190,6 @@ export default function QueryPage() {
                                 key={location.key}
                                 className="px-4 py-2 hover:bg-white/10 cursor-pointer text-white"
                                 onClick={() => {
-                                  setFrom(location.value);
                                   setFromInput(location.value);
                                   setShowFromDropdown(false);
                                 }}
@@ -186,7 +198,9 @@ export default function QueryPage() {
                               </div>
                             ))
                           ) : (
-                            <div className="px-4 py-2 text-gray-400">No matches found</div>
+                            <div className="px-4 py-2 text-gray-400">
+                              No matches found
+                            </div>
                           )}
                         </div>
                       )}
@@ -209,6 +223,7 @@ export default function QueryPage() {
                         }}
                         className="w-full border border-white/20 bg-white/5 text-white"
                         placeholder="Search city..."
+                        disabled={loading}
                       />
                       {showToDropdown && toInput && (
                         <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-gray-800 border border-white/20 rounded-md z-50">
@@ -217,7 +232,6 @@ export default function QueryPage() {
                               key={location.key}
                               className="px-4 py-2 hover:bg-white/10 cursor-pointer text-white"
                               onClick={() => {
-                                setTo(location.value);
                                 setToInput(location.value);
                                 setShowToDropdown(false);
                               }}
@@ -233,34 +247,67 @@ export default function QueryPage() {
                   {/* Days Selection */}
                   <div className="space-y-2">
                     <label className="flex items-center text-sm font-medium text-gray-300">
-                      <Calendar className="w-4 h-4 mr-2" />
+                      <CalendarIcon className="w-4 h-4 mr-2" />
                       Duration
                     </label>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                    <Popover>
+                      <PopoverTrigger asChild>
                         <Button
-                          variant="outline"
-                          className="w-full justify-start text-left font-normal border border-white/20 bg-white/5 hover:bg-white/10 text-white"
+                          id="date"
+                          variant={"outline"}
+                          disabled={loading}
+                          className={cn(
+                            "w-full justify-start text-left font-normal border border-white/20 bg-white/5 hover:bg-white/10 text-white overflow-hidden",
+                            !date && "text-muted-foreground"
+                          )}
                         >
-                          {days || "Select Days"}
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {date?.from ? (
+                            date.to ? (
+                              <span className="flex items-center">
+                                <span className="mr-1">{format(date.from, "LLL dd, y")}</span>
+                                <span className="mx-1">-</span>
+                                <span>{format(date.to, "LLL dd, y")}</span>
+                              </span>
+                            ) : (
+                              <span>{format(date.from, "LLL dd, y")}</span>
+                            )
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
                         </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="bg-white border border-white/20">
-                        {[...Array(7)].map((_, index) => (
-                          <DropdownMenuItem
-                            key={index}
-                            onClick={() =>
-                              setDays(
-                                `${index + 1} day${index === 0 ? "" : "s"}`
-                              )
-                            }
-                            className="hover:bg-white/10"
-                          >
-                            {index + 1} day{index === 0 ? "" : "s"}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          initialFocus
+                          mode="range"
+                          defaultMonth={date?.from}
+                          selected={date}
+                          onSelect={setDate}
+                          numberOfMonths={2}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Budget */}
+                  <div className="space-y-2 relative">
+                    <label className="flex items-center text-sm font-medium text-gray-300">
+                      <IndianRupee className="w-4 h-4 mr-2" />
+                      Budget
+                    </label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        value={budget}
+                        onChange={(e) => {
+                          setBudget(e.target.value);
+                        }}
+                        className="w-full border border-white/20 bg-white/5 text-white"
+                        placeholder="Enter budget..."
+                        disabled={loading}
+                      />
+                    </div>
                   </div>
                 </div>
 
