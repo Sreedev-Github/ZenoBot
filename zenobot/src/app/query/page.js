@@ -120,7 +120,7 @@ export default function QueryPage() {
     setLoading(true);
     setError(null);
 
-    const query = `I am planning a travel in India, from ${fromInput} to ${toInput}. Could you please help me plan the trip from ${date.from} to ${date.to}. Please suggest me the best places to visit, activities to do, food to eat, and accommodation. I would like a detailed itenarary for each day.`;
+    const query = `I am planning a trip in India from ${fromInput} to ${toInput}. The trip is scheduled between ${date.from} and ${date.to}. Could you help me create a detailed itinerary? Please include the best places to visit each day, recommended activities to enjoy, local cuisines or restaurants to try, and suggestions for comfortable accommodations. I’d appreciate a well-structured, day-by-day plan to make the most of my journey. Thank you!`;
 
     console.log(query);
     
@@ -133,6 +133,8 @@ export default function QueryPage() {
       });
 
       const result = await res.json();
+      console.log('API response:', result); // Log the response
+
       if (res.ok) {
         setResponse(result.reply);
       } else {
@@ -337,6 +339,7 @@ export default function QueryPage() {
                 <div className="mt-8 space-y-6">
                   {(() => {
                     try {
+                      console.log('Parsing response:', response); // Log the response before parsing
                       const travelPlan = JSON.parse(response);
                       // Validate if we have all days as per duration
                       const tripDays = parseInt(
@@ -369,68 +372,56 @@ export default function QueryPage() {
                           </Card>
 
                           {/* Itinerary Cards with validation */}
-                          {Array.from({ length: tripDays }).map((_, index) => {
-                            const dayData = travelPlan.itinerary.find(
-                              (day) => day[`day ${index + 1}`]
-                            );
-                            const dayActivities = dayData
-                              ? dayData[`day ${index + 1}`]
-                              : [];
-
-                            return (
-                              <Card
-                                key={index}
-                                className="bg-white/5 border-white/20 text-white"
-                              >
-                                <CardHeader>
-                                  <CardTitle className="text-xl">
-                                    Day {index + 1}
-                                  </CardTitle>
-                                  {!dayActivities.length && (
-                                    <CardDescription className="text-yellow-400">
-                                      No activities planned for this day
-                                    </CardDescription>
-                                  )}
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                  {dayActivities.map((activity, actIndex) => (
-                                    <div
-                                      key={actIndex}
-                                      className="p-4 bg-white/5 rounded-lg space-y-2"
-                                    >
-                                      <div className="flex items-center gap-2 text-emerald-400">
-                                        <Clock className="w-4 h-4" />
-                                        <span>{activity.time}</span>
-                                      </div>
-                                      <h3 className="text-lg font-medium">
-                                        {activity.activity}
-                                      </h3>
-                                      <p className="text-gray-300 text-sm">
-                                        {activity.description}
-                                      </p>
-                                      {activity.transportation && (
-                                        <div className="flex items-center gap-2 text-gray-400 text-sm">
-                                          {activity.transportation ===
-                                            "flight" && (
-                                            <Plane className="w-4 h-4" />
-                                          )}
-                                          {activity.transportation ===
-                                            "bus" && (
-                                            <Bus className="w-4 h-4" />
-                                          )}
-                                          {activity.transportation ===
-                                            "train" && (
-                                            <Train className="w-4 h-4" />
-                                          )}
-                                          <span>{activity.transportation}</span>
-                                        </div>
-                                      )}
+                          {Object.entries(travelPlan.itinerary[0]).map(([date, activities], index) => (
+                            <Card
+                              key={index}
+                              className="bg-white/5 border-white/20 text-white"
+                            >
+                              <CardHeader>
+                                <CardTitle className="text-xl">
+                                  {date}
+                                </CardTitle>
+                                {!activities.length && (
+                                  <CardDescription className="text-yellow-400">
+                                    No activities planned for this day
+                                  </CardDescription>
+                                )}
+                              </CardHeader>
+                              <CardContent className="space-y-4">
+                                {activities.map((activity, actIndex) => (
+                                  <div
+                                    key={actIndex}
+                                    className="p-4 bg-white/5 rounded-lg space-y-2"
+                                  >
+                                    <div className="flex items-center gap-2 text-emerald-400">
+                                      <Clock className="w-4 h-4" />
+                                      <span>{activity.time}</span>
                                     </div>
-                                  ))}
-                                </CardContent>
-                              </Card>
-                            );
-                          })}
+                                    <h3 className="text-lg font-medium">
+                                      {activity.name}
+                                    </h3>
+                                    <p className="text-gray-300 text-sm">
+                                      {activity.description}
+                                    </p>
+                                    {activity.transportation && (
+                                      <div className="flex items-center gap-2 text-gray-400 text-sm">
+                                        {activity.transportation.includes("flight") && (
+                                          <Plane className="w-4 h-4" />
+                                        )}
+                                        {activity.transportation.includes("bus") && (
+                                          <Bus className="w-4 h-4" />
+                                        )}
+                                        {activity.transportation.includes("train") && (
+                                          <Train className="w-4 h-4" />
+                                        )}
+                                        <span>{activity.transportation}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </CardContent>
+                            </Card>
+                          ))}
 
                           <Card className="bg-white/5 border-white/20 text-white">
                             <CardHeader>
@@ -442,14 +433,14 @@ export default function QueryPage() {
                               <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4" />
                                 <span>
-                                  {JSON.parse(response).accommodation.location}
+                                  {travelPlan.accommodation.location}
                                 </span>
                               </div>
                               <Badge
                                 className="mt-2 text-white"
                                 variant="outline"
                               >
-                                {JSON.parse(response).accommodation.type}
+                                {travelPlan.accommodation.type}
                               </Badge>
                             </CardContent>
                           </Card>
@@ -463,10 +454,10 @@ export default function QueryPage() {
                             </CardHeader>
                             <CardContent>
                               <Badge variant="outline" className="text-white">
-                                {JSON.parse(response).food.type}
+                                {travelPlan.food.type}
                               </Badge>
                               <p className="mt-2 text-gray-300">
-                                {JSON.parse(response).food.recommended}
+                                {travelPlan.food.recommended}
                               </p>
                             </CardContent>
                           </Card>

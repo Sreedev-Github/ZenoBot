@@ -7,6 +7,6 @@ Budget - DONE
 Calender support - DONE
 
 
-Code Fixes
+CSS Fixes
 
 - Add spacing in Date Picker input
