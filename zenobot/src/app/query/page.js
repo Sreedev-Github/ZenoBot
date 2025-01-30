@@ -372,54 +372,52 @@ export default function QueryPage() {
                           </Card>
 
                           {/* Itinerary Cards with validation */}
-                          {Object.entries(travelPlan.itinerary[0]).map(([date, activities], index) => (
+                          {travelPlan.itinerary.map((day, index) => (
                             <Card
                               key={index}
                               className="bg-white/5 border-white/20 text-white"
                             >
-                              <CardHeader>
+                                {/* <CardHeader>
                                 <CardTitle className="text-xl">
-                                  {date}
+                                  {day.date}
                                 </CardTitle>
                                 {!activities.length && (
                                   <CardDescription className="text-yellow-400">
                                     No activities planned for this day
                                   </CardDescription>
                                 )}
-                              </CardHeader>
+                              </CardHeader> */}
                               <CardContent className="space-y-4">
-                                {activities.map((activity, actIndex) => (
-                                  <div
-                                    key={actIndex}
-                                    className="p-4 bg-white/5 rounded-lg space-y-2"
-                                  >
-                                    <div className="flex items-center gap-2 text-emerald-400">
-                                      <Clock className="w-4 h-4" />
-                                      <span>{activity.time}</span>
-                                    </div>
-                                    <h3 className="text-lg font-medium">
-                                      {activity.name}
-                                    </h3>
-                                    <p className="text-gray-300 text-sm">
-                                      {activity.description}
-                                    </p>
-                                    {activity.transportation && (
-                                      <div className="flex items-center gap-2 text-gray-400 text-sm">
-                                        {activity.transportation.includes("flight") && (
-                                          <Plane className="w-4 h-4" />
-                                        )}
-                                        {activity.transportation.includes("bus") && (
-                                          <Bus className="w-4 h-4" />
-                                        )}
-                                        {activity.transportation.includes("train") && (
-                                          <Train className="w-4 h-4" />
-                                        )}
-                                        <span>{activity.transportation}</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                ))}
-                              </CardContent>
+                                {[day.morning, day.afternoon, day.evening].map((activity, actIndex) =>
+                                  activity ? (
+                                    <div key={actIndex} className="p-4 bg-white/5 rounded-lg space-y-2">
+                                      <h3 className="text-lg font-medium">{activity.name}</h3>
+                        <p className="text-gray-300 text-sm">{activity.description}</p>
+                        {activity.transportation && (
+                          <div className="flex items-center gap-2 text-gray-400 text-sm">
+                            {activity.transportation.includes("flight") && <Plane className="w-4 h-4" />}
+                            {activity.transportation.includes("bus") && <Bus className="w-4 h-4" />}
+                            {activity.transportation.includes("train") && <Train className="w-4 h-4" />}
+                            <span>{activity.transportation}</span>
+                          </div>
+                        )}
+                      </div>
+                    ) : null
+                  )}
+
+                  {/* Additional Activities */}
+                  {day.additionalActivities?.length > 0 && (
+                    <div className="mt-4">
+                      <h4 className="text-lg font-medium text-yellow-400">Additional Activities</h4>
+                      {day.additionalActivities.map((extra, extraIndex) => (
+                        <div key={extraIndex} className="p-4 bg-white/5 rounded-lg space-y-2">
+                          <h3 className="text-lg font-medium">{extra.name}</h3>
+                          <p className="text-gray-300 text-sm">{extra.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
                             </Card>
                           ))}
 
