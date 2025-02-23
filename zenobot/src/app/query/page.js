@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import { addDays, format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
-import states from "@/utils/stateCities.json"; // Ensure correct import path
+import states from "@/utils/stateCities.json";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
@@ -30,14 +30,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-// Console log to verify data
-// console.log('States data:', states);
-
 export default function QueryPage() {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [days, setDays] = useState("");
   const [budget, setBudget] = useState("");
   const [fromInput, setFromInput] = useState("");
   const [toInput, setToInput] = useState("");
@@ -50,11 +46,9 @@ export default function QueryPage() {
     to: addDays(new Date(), 7),
   });
 
-  // Update getAllCityStateOptions
   const getAllCityStateOptions = useMemo(() => {
     try {
       const options = [];
-      // console.log('Processing states:', states);
       if (states && typeof states === "object") {
         Object.entries(states).forEach(([state, cities]) => {
           if (Array.isArray(cities)) {
@@ -67,7 +61,6 @@ export default function QueryPage() {
           }
         });
       }
-      // console.log('Generated options:', options);
       return options;
     } catch (error) {
       console.error("Error processing states:", error);
@@ -109,7 +102,6 @@ export default function QueryPage() {
 
     return () => clearTimeout(timer);
   }, [toInput]);
-   
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -123,7 +115,6 @@ export default function QueryPage() {
     const query = `I am planning a trip in India from ${fromInput} to ${toInput}. The trip is scheduled between ${date.from} and ${date.to}. Could you help me create a detailed itinerary? Please include the best places to visit each day, recommended activities to enjoy, local cuisines or restaurants to try, and suggestions for comfortable accommodations. I’d appreciate a well-structured, day-by-day plan to make the most of my journey. Thank you!`;
 
     console.log(query);
-    
 
     try {
       const res = await fetch("/api/ask-query", {
@@ -151,7 +142,6 @@ export default function QueryPage() {
     <div className="min-h-screen bg-[url('/travel-pattern.jpg')] bg-cover bg-fixed">
       <div className="min-h-screen bg-gradient-to-br from-gray-900/90 via-gray-800/90 to-gray-900/90 backdrop-blur-sm">
         <div className="container mx-auto px-4 py-8">
-          {/* Hero Section */}
           <div className="text-center space-y-4 py-16 animate-fade-in">
             <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
               Zeno Trip Planner
@@ -161,12 +151,10 @@ export default function QueryPage() {
             </p>
           </div>
 
-          {/* Form Section */}
           <div className="max-w-6xl mx-auto mt-8">
             <div className="backdrop-blur-xl bg-white/10 p-8 rounded-2xl shadow-2xl border border-white/20">
               <form onSubmit={onSubmit} className="space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  {/* From Location */}
                   <div className="space-y-2 relative">
                     <label className="flex items-center text-sm font-medium text-gray-300">
                       <MapPin className="w-4 h-4 mr-2" />
@@ -209,7 +197,6 @@ export default function QueryPage() {
                     </div>
                   </div>
 
-                  {/* To Location */}
                   <div className="space-y-2 relative">
                     <label className="flex items-center text-sm font-medium text-gray-300">
                       <Plane className="w-4 h-4 mr-2" />
@@ -246,7 +233,6 @@ export default function QueryPage() {
                     </div>
                   </div>
 
-                  {/* Days Selection */}
                   <div className="space-y-2">
                     <label className="flex items-center text-sm font-medium text-gray-300">
                       <CalendarIcon className="w-4 h-4 mr-2" />
@@ -292,7 +278,6 @@ export default function QueryPage() {
                     </Popover>
                   </div>
 
-                  {/* Budget */}
                   <div className="space-y-2 relative">
                     <label className="flex items-center text-sm font-medium text-gray-300">
                       <IndianRupee className="w-4 h-4 mr-2" />
@@ -341,6 +326,8 @@ export default function QueryPage() {
                     try {
                       console.log('Parsing response:', response); // Log the response before parsing
                       const travelPlan = JSON.parse(response);
+                      console.log('Parsed travel plan:', travelPlan); // Log the parsed travel plan
+
                       // Validate if we have all days as per duration
                       const tripDays = parseInt(
                         travelPlan.trip.duration.split(" ")[0]
@@ -348,7 +335,6 @@ export default function QueryPage() {
 
                       return (
                         <>
-                          {/* Trip Overview Card - remains same */}
                           <Card className="bg-white/5 border-white/20 text-white">
                             <CardHeader>
                               <CardTitle className="text-xl">
@@ -371,53 +357,46 @@ export default function QueryPage() {
                             </CardContent>
                           </Card>
 
-                          {/* Itinerary Cards with validation */}
                           {travelPlan.itinerary.map((day, index) => (
                             <Card
                               key={index}
-                              className="bg-white/5 border-white/20 text-white"
+                              className="bg-white/5 border-white/20 text-white mb-8" // Add some spacing below each card
                             >
-                                {/* <CardHeader>
-                                <CardTitle className="text-xl">
-                                  {day.date}
-                                </CardTitle>
-                                {!activities.length && (
-                                  <CardDescription className="text-yellow-400">
-                                    No activities planned for this day
-                                  </CardDescription>
-                                )}
-                              </CardHeader> */}
                               <CardContent className="space-y-4">
+                                {/* Display the date */}
+                                <div className="text-xl font-semibold text-blue-300">
+                                  Day {index + 1}: {day.date}
+                                </div>
+
                                 {[day.morning, day.afternoon, day.evening].map((activity, actIndex) =>
                                   activity ? (
                                     <div key={actIndex} className="p-4 bg-white/5 rounded-lg space-y-2">
                                       <h3 className="text-lg font-medium">{activity.name}</h3>
-                        <p className="text-gray-300 text-sm">{activity.description}</p>
-                        {activity.transportation && (
-                          <div className="flex items-center gap-2 text-gray-400 text-sm">
-                            {activity.transportation.includes("flight") && <Plane className="w-4 h-4" />}
-                            {activity.transportation.includes("bus") && <Bus className="w-4 h-4" />}
-                            {activity.transportation.includes("train") && <Train className="w-4 h-4" />}
-                            <span>{activity.transportation}</span>
-                          </div>
-                        )}
-                      </div>
-                    ) : null
-                  )}
+                                      <p className="text-gray-300 text-sm">{activity.description}</p>
+                                      {activity.transportation && (
+                                        <div className="flex items-center gap-2 text-gray-400 text-sm">
+                                          {activity.transportation.includes("flight") && <Plane className="w-4 h-4" />}
+                                          {activity.transportation.includes("bus") && <Bus className="w-4 h-4" />}
+                                          {activity.transportation.includes("train") && <Train className="w-4 h-4" />}
+                                          <span>{activity.transportation}</span>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ) : null
+                                )}
 
-                  {/* Additional Activities */}
-                  {day.additionalActivities?.length > 0 && (
-                    <div className="mt-4">
-                      <h4 className="text-lg font-medium text-yellow-400">Additional Activities</h4>
-                      {day.additionalActivities.map((extra, extraIndex) => (
-                        <div key={extraIndex} className="p-4 bg-white/5 rounded-lg space-y-2">
-                          <h3 className="text-lg font-medium">{extra.name}</h3>
-                          <p className="text-gray-300 text-sm">{extra.description}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </CardContent>
+                                {day.additionalActivities?.length > 0 && (
+                                  <div className="mt-4">
+                                    <h4 className="text-lg font-medium text-yellow-400">Additional Activities</h4>
+                                    {day.additionalActivities.map((extra, extraIndex) => (
+                                      <div key={extraIndex} className="p-4 bg-white/5 rounded-lg space-y-2">
+                                        <h3 className="text-lg font-medium">{extra.name}</h3>
+                                        <p className="text-gray-300 text-sm">{extra.description}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </CardContent>
                             </Card>
                           ))}
 
@@ -443,7 +422,6 @@ export default function QueryPage() {
                             </CardContent>
                           </Card>
 
-                          {/* Food Recommendations Card */}
                           <Card className="bg-white/5 border-white/20 text-white">
                             <CardHeader>
                               <CardTitle className="text-xl">

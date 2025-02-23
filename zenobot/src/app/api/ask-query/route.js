@@ -50,7 +50,7 @@ export async function POST(req) {
       console.error('Error saving response');
     }
 
-    return NextResponse.json({ reply: responseText });
+    return NextResponse.json({ reply: cleanedResponse });
   } catch (error) {
     console.error('Error interacting with the model:', error.message);
     return NextResponse.json({ error: 'Model not found or server error' }, { status: 500 });
