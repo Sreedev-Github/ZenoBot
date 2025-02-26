@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -29,42 +29,60 @@ function Page() {
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
   });
+  const [monthsToShow, setMonthsToShow] = useState(2);
+
+  // Responsively adjust number of calendar months shown
+  useEffect(() => {
+    function handleResize() {
+      setMonthsToShow(window.innerWidth < 768 ? 1 : 2);
+    }
+
+    // Set initial value
+    handleResize();
+
+    // Add event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <div className="relative h-[90vh] flex flex-col gap-14 justify-center items-center bg-[url(/hero-bg.jpg)] bg-center bg-cover shadow-inner">
+    <div className="py-10 relative w-[100vw] h-[100%] flex flex-col gap-14 justify-center items-center bg-[url(/hero-bg.jpg)] bg-center bg-cover shadow-inner">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
 
-      <p className="relative text-7xl font-bold text-center max-w-[50vw] text-slate-50 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.7)] mt-auto">
+      <p className="relative text-base md:text-7xl my-auto font-bold text-center px-2 lg:max-w-[50vw] text-slate-50 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.7)]">
         Your Ultimate AI Travel Companion: Plan, Explore, Enjoy!
       </p>
 
-      <div className="relative mb-auto flex gap-8 min-w-[50%] bg-white bg-opacity-25 rounded-full p-2 shadow-lg pl-8">
+      <div className="relative mb-auto flex-col flex gap-8 max-w-[80%] min-w-[50%] bg-white bg-opacity-25 rounded-xl p-2 shadow-lg px-4 md:pl-8">
         <Input
           type="text"
           placeholder="From"
           className="
             my-auto bg-transparent text-white placeholder:text-white
-            border-b-2 border-transparent
+            border-b-2 md:border-transparent border-white border-t-0 border-x-0
             focus:border-b-white
             transition-[border-color] duration-300 ease-linear
             focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
           "
         />
 
-        <Separator className="max-w-10 rotate-90 my-auto bg-white" />
+        <Separator className="hidden md:visible max-w-10 rotate-90 my-auto bg-white" />
 
         <Input
           type="text"
           placeholder="To"
           className=" my-auto bg-transparent text-white placeholder:text-white
                     border-t-0 border-x-0
-                     border-b-2 border-transparent
+                     border-b-2 md:border-transparent border-white
                      focus:border-b-white
                      transition-all duration-300 ease-linear
                      focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
         />
 
-        <Separator className="max-w-10 rotate-90 my-auto bg-white" />
+        <Separator className="hidden md:visible max-w-10 rotate-90 my-auto bg-white" />
 
         {/* Dropdown for Days */}
         <div
@@ -87,11 +105,26 @@ function Page() {
                 {date?.from ? (
                   date.to ? (
                     <>
-                      {format(date.from, "LLL dd, y")} -{" "}
-                      {format(date.to, "LLL dd, y")}
+                      {/* Medium and up: show "Jan 29, 2025" style */}
+                      <span className="hidden md:inline">
+                        {format(date.from, "LLL dd, y")} -{" "}
+                        {format(date.to, "LLL dd, y")}
+                      </span>
+                      {/* Smaller screens: show "Jan 29" style */}
+                      <span className="inline md:hidden">
+                        {format(date.from, "LLL dd")} -{" "}
+                        {format(date.to, "LLL dd")}
+                      </span>
                     </>
                   ) : (
-                    format(date.from, "LLL dd, y")
+                    <>
+                      <span className="hidden md:inline">
+                        {format(date.from, "LLL dd, y")}
+                      </span>
+                      <span className="inline md:hidden">
+                        {format(date.from, "LLL dd")}
+                      </span>
+                    </>
                   )
                 ) : (
                   <span>Pick a date</span>
@@ -105,7 +138,7 @@ function Page() {
                 defaultMonth={date?.from}
                 selected={date}
                 onSelect={setDate}
-                numberOfMonths={2}
+                numberOfMonths={monthsToShow}
               />
             </PopoverContent>
           </Popover>
@@ -115,7 +148,7 @@ function Page() {
 
         <Button
           variant="primary"
-          className="bg-white text-black rounded-full py-9 px-14 text-xl hover:bg-transparent hover:text-white transition-all duration-300 ease-linear border-2 border-transparent hover:border-white"
+          className=" bg-white text-black rounded-full md:py-9 md:px-14 md:text-xl hover:bg-transparent hover:text-white transition-all duration-300 ease-linear border-2 border-transparent hover:border-white"
         >
           Plan Trip
         </Button>
