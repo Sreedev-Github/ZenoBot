@@ -1,0 +1,591 @@
+NOTE : This is a sample response for the SERP API for hotels. The response is a JSON object containing an array of hotels. Each hotel object contains the following fields:
+1. name (String) : The name of the hotel.
+2. description (String) : A brief description of the hotel.
+3. link (String) : The link to the hotel's website.
+4. price (String) : The price per night for the hotel.
+5. total_price (String) : The total price for the stay.  This is calculated by multiplying the price per night by 3 (for a 3-night stay).
+6. rating (Float) : The rating of the hotel.
+7. reviews (Integer) : The number of reviews for the hotel.
+8. hotel_class (String) : The class of the hotel.
+9. amenities (Array of Strings) : An array of amenities offered by the hotel.
+10. check_in_time (String) : The check-in time for the hotel.
+11. check_out_time (String) : The check-out time for the hotel.
+12. thumbnail (String) : The URL of the thumbnail image of the hotel.
+13. location (Object) : An object containing the latitude and longitude of the hotel.
+14. nearby_places (Array of Objects) : THIS HAS NOW BEEN EXCLUDED DUE TO EXCESS DATA BEING RECIEVED. An array of nearby places with information on how to get there. THIS 
+
+
+--------------------- REPOSNE STARTS FROM HERE -------------------------
+{
+  "hotels": [
+    {
+      "name": "Hyatt Centric Janakpuri New Delhi",
+      "description": "Streamlined rooms & suites in an upmarket hotel featuring a restaurant, a spa & an outdoor pool.",
+      "link": "https://www.hyatt.com/hyatt-centric/en-US/delct-hyatt-centric-janakpuri-new-delhi?src=corp_lclb_google_seo_delct&utm_source=google&utm_medium=organic&utm_campaign=lmr",
+      "price": "₹6,074",
+      "total_price": "₹18,222",
+      "rating": 3.8,
+      "reviews": 10902,
+      "hotel_class": "5-star hotel",
+      "amenities": [
+        "Free breakfast",
+        "Free Wi-Fi",
+        "Free parking",
+        "Pool",
+        "Air conditioning",
+        "Fitness centre",
+        "Spa",
+        "Bar",
+        "Restaurant",
+        "Room service",
+        "Airport shuttle",
+        "Full-service laundry",
+        "Accessible",
+        "Business centre",
+        "Child-friendly"
+      ],
+      "check_in_time": "12:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipOFQ5BuNj2d1RNcITWsPOv397l0D3JfoXkP2Hcj=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.6288785,
+        "longitude": 77.0785077
+      },
+      "nearby_places": [
+        {
+          "name": "Janakpuri West",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "2 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Public transport",
+              "duration": "16 min"
+            },
+            {
+              "type": "Taxi",
+              "duration": "27 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Jaypee Siddharth - 5 Star Luxury Hotels in Delhi",
+      "description": "Upmarket property with a refined restaurant & a 24-hour cafe, plus an outdoor pool, a gym & a spa.",
+      "link": "https://www.jaypeehotels.com/hotel/jaypee-siddharth-new-delhi?utm_source=gmb&utm_medium=google&utm_campaign=organic",
+      "price": "₹9,138",
+      "total_price": "₹27,415",
+      "rating": 4.2,
+      "reviews": 10567,
+      "hotel_class": "4-star hotel",
+      "amenities": [
+        "Free breakfast",
+        "Free Wi-Fi",
+        "Free parking",
+        "Outdoor pool",
+        "Hot tub",
+        "Air conditioning",
+        "Fitness centre",
+        "Spa",
+        "Bar",
+        "Restaurant",
+        "Room service",
+        "Airport shuttle",
+        "Full-service laundry",
+        "Accessible",
+        "Child-friendly"
+      ],
+      "check_in_time": "12:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh4.googleusercontent.com/proxy/Lh3YEADHCNRcUXb1bO_Nf8n24TPbqpfhnC_bigbYqc5SuR9Yo5GqfD85r9RRApstfli1imC_2xusWzwrKCICXsFim6dN2TnVzObLQ6WeexWTV4YsRimB6ohtItHUf2K-k-yVFjYK1-drC_yrGHA63xozaT6R3PU=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.6427493,
+        "longitude": 77.1754692
+      },
+      "nearby_places": [
+        {
+          "name": "Shri Laxmi Narayan Temple (Birla Mandir)",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "9 min"
+            }
+          ]
+        },
+        {
+          "name": "Rajendra Place",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "5 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "23 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "48 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "IIDL Suites",
+      "description": "Plush units, some with balconies, in an upscale apartment hotel offering a rooftop pool & dining.",
+      "link": "http://iidlhospitality.com/",
+      "price": "₹4,991",
+      "total_price": "₹14,974",
+      "rating": 4.2,
+      "reviews": 4407,
+      "hotel_class": "5-star hotel",
+      "amenities": [
+        "Free breakfast",
+        "Free Wi-Fi",
+        "Free parking",
+        "Indoor pool",
+        "Hot tub",
+        "Air conditioning",
+        "Fitness centre",
+        "Spa",
+        "Restaurant",
+        "Room service",
+        "Kitchen in some rooms",
+        "Airport shuttle",
+        "Full-service laundry",
+        "Accessible",
+        "Business centre",
+        "Child-friendly"
+      ],
+      "check_in_time": "2:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipOXgFG7U__X6O7iU1XWite8rlEWIWfOuoeGFo0p=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.594201599999998,
+        "longitude": 77.2990021
+      },
+      "nearby_places": [
+        {
+          "name": "Akshardham",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "8 min"
+            }
+          ]
+        },
+        {
+          "name": "Mayur Vihar Extension",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "7 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "40 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "1 hr 17 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Radisson Blu Hotel, Kaushambi Delhi NCR",
+      "description": "Regal property offering lavish rooms & suites, plus an indoor pool & 4 dining options.",
+      "link": "https://www.radissonhotels.com/en-us/hotels/radisson-blu-kaushambi-delhi-ncr?cid=a:se+b:gmb+c:apac+i:local+e:rdb+d:ind+h:INUPGHANCR",
+      "price": "₹8,115",
+      "total_price": "₹24,346",
+      "rating": 4.4,
+      "reviews": 27353,
+      "hotel_class": "5-star hotel",
+      "amenities": [
+        "Breakfast ($)",
+        "Free Wi-Fi",
+        "Free parking",
+        "Outdoor pool",
+        "Air conditioning",
+        "Fitness centre",
+        "Spa",
+        "Bar",
+        "Restaurant",
+        "Room service",
+        "Airport shuttle",
+        "Full-service laundry",
+        "Accessible"
+      ],
+      "check_in_time": "3:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh5.googleusercontent.com/proxy/pjl7Q8hWYLgBJe05gUpeI8O2rxur4yo97ndpcz-4cMph-xCy3_0cwRT5czSiDr1eMq6N2mNevcaJhhgwxFJWsRMDsgUPjH44Y5cOK1ZouaUJJzjxx7HHT0_e-34ymcaDa_7YBhZtUqY7m5wlGfqpXaqfKjjLlqo=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.6366928,
+        "longitude": 77.32793989999999
+      },
+      "nearby_places": [
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "46 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "1 hr 35 min"
+            }
+          ]
+        },
+        {
+          "name": "Avatar",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "1 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Vivanta New Delhi, Dwarka",
+      "description": "Striking property featuring modern rooms, trendy eateries & a bakery, along with a pool & a spa.",
+      "link": "https://www.vivantahotels.com/en-in/vivanta-new-delhi-dwarka/?utm_source=google&utm_medium=local&utm_campaign=vivanta_new_delhi_dwarka_cla&utm_content=vivanta_new_delhi_dwarka_gmb",
+      "price": "₹11,499",
+      "total_price": "₹34,498",
+      "rating": 4.4,
+      "reviews": 17547,
+      "hotel_class": "5-star hotel",
+      "amenities": [
+        "Breakfast ($)",
+        "Free Wi-Fi",
+        "Free parking",
+        "Outdoor pool",
+        "Hot tub",
+        "Air conditioning",
+        "Pet-friendly",
+        "Fitness centre",
+        "Spa",
+        "Bar",
+        "Restaurant",
+        "Room service",
+        "Golf",
+        "Full-service laundry",
+        "Accessible",
+        "Business centre",
+        "Child-friendly"
+      ],
+      "check_in_time": "2:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipMmjdJcrgddm1TkMG9ldurVjgj6b_Gyo3T3pVOC=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.558492899999997,
+        "longitude": 77.0633592
+      },
+      "nearby_places": [
+        {
+          "name": "SFS Flats Sec 22 Dwarka",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "3 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "26 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "43 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "The Leena International- New Delhi",
+      "price": "₹3,360",
+      "total_price": "₹10,080",
+      "rating": 4.1,
+      "reviews": 306,
+      "check_in_time": "12:00 PM",
+      "check_out_time": "11:00 AM",
+      "thumbnail": "https://lh3.googleusercontent.com/proxy/sAIoV_7jEcYftLYOEG8g1r9NeRmUrZU_-a-vUxLWeBXySF6IDeODpnxmhjJ1ms-LYp9fKohJt3nB2VpPLI4Nxm-4fsWUN6SX04aw8izEONvWxPwjklMXYVJcbNcU6WvVz8_d34Nw9BkrUE5VSESIVxi4HETJVA=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.645639199999998,
+        "longitude": 77.21133739999999
+      },
+      "nearby_places": [
+        {
+          "name": "Paharganj Dispensary",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "3 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "32 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "1 hr 6 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ramada by Wyndham New Delhi Pitampura",
+      "description": "Relaxed hotel offering a restaurant/cafe, plus an outdoor pool & a fitness centre.",
+      "link": "https://www.wyndhamhotels.com/ramada/new-delhi-india/ramada-new-delhi-pitampura/overview?CID=LC:wmcic5n98gs1g0r:47921&iata=00093796",
+      "price": "₹7,335",
+      "total_price": "₹22,006",
+      "rating": 3.9,
+      "reviews": 2602,
+      "hotel_class": "4-star hotel",
+      "amenities": [
+        "Free breakfast",
+        "Free Wi-Fi",
+        "Free parking",
+        "Air conditioning",
+        "Fitness centre",
+        "Restaurant",
+        "Room service",
+        "Accessible",
+        "Business centre",
+        "Smoke-free property"
+      ],
+      "check_in_time": "2:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipOsp-2w2NrTgKDMTSS3EdB7IdmY0rcmTWQpaxuC=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.690875199999997,
+        "longitude": 77.1200416
+      },
+      "nearby_places": [
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "40 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "1 hr 9 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Park Inn by Radisson New Delhi IP Extension",
+      "description": "Modern rooms in a stylish property featuring a grill restaurant, a lobby lounge & a rooftop pool.",
+      "link": "https://www.radissonhotels.com/en-us/hotels/park-inn-new-delhi-ip-extension?cid=a:se+b:gmb+c:apac+i:local+e:pii+d:ind+h:INDLDELIPX",
+      "price": "₹10,965",
+      "total_price": "₹32,895",
+      "rating": 4.4,
+      "reviews": 7768,
+      "hotel_class": "4-star hotel",
+      "amenities": [
+        "Breakfast ($)",
+        "Free Wi-Fi",
+        "Free parking",
+        "Outdoor pool",
+        "Air conditioning",
+        "Fitness centre",
+        "Bar",
+        "Restaurant",
+        "Room service",
+        "Airport shuttle",
+        "Full-service laundry",
+        "Accessible",
+        "Business centre",
+        "Smoke-free property"
+      ],
+      "check_in_time": "2:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipOx_xIfu-6SYdfw7kS4GasLjHsfkkQGNJoghpkZ=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.630046099999998,
+        "longitude": 77.3147027
+      },
+      "nearby_places": [
+        {
+          "name": "Gazipur NH-24 Crossing",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "5 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "44 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "1 hr 44 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Calista Resort",
+      "description": "Polished rooms in an upscale property offering an international restaurant & a cafe.",
+      "link": "https://www.calistaresorts.com/",
+      "price": "₹2,928",
+      "total_price": "₹8,785",
+      "rating": 4.2,
+      "reviews": 4433,
+      "hotel_class": "3-star hotel",
+      "amenities": [
+        "Free breakfast",
+        "Free Wi-Fi",
+        "Free parking",
+        "Air conditioning",
+        "Restaurant",
+        "Room service",
+        "Kitchen in some rooms",
+        "Airport shuttle",
+        "Full-service laundry",
+        "Accessible",
+        "Business centre",
+        "Child-friendly"
+      ],
+      "check_in_time": "12:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh5.googleusercontent.com/p/AF1QipNR3kQiJmh28am2GIdTJiiMuoQZcQCheppZbX7E=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.5201189,
+        "longitude": 77.08205360000001
+      },
+      "nearby_places": [
+        {
+          "name": "Opp Hotel Leela main MCD Toll Delhi Jaipur Expressway",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "4 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "23 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "39 min"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Eros Hotel New Delhi Nehru Place",
+      "description": "Upmarket property offering 3 restaurants & a bar, plus a health club with an outdoor pool & a spa.",
+      "link": "http://www.eroshotels.co.in/",
+      "price": "₹11,041",
+      "total_price": "₹33,123",
+      "rating": 4.3,
+      "reviews": 15227,
+      "hotel_class": "5-star hotel",
+      "amenities": [
+        "Breakfast ($)",
+        "Free Wi-Fi",
+        "Free parking",
+        "Outdoor pool",
+        "Air conditioning",
+        "Fitness centre",
+        "Bar",
+        "Restaurant",
+        "Room service",
+        "Airport shuttle",
+        "Full-service laundry",
+        "Accessible",
+        "Business centre",
+        "Child-friendly"
+      ],
+      "check_in_time": "2:00 PM",
+      "check_out_time": "12:00 PM",
+      "thumbnail": "https://lh6.googleusercontent.com/proxy/5LVzrDHFto5Awro9EpPXWWHqvRkpCllb8_LiOgKerBfXglLgjNVYlesBausvThzNPNCl5HSE_L01o1YrEA48limcPiPI5ppmn9F6whNRY6Km3DtmaLSRJhhbfYSldFIylkb2RhRJzrg12etHSJcVbnhatdSQBA=s287-w287-h192-n-k-no-v1",
+      "location": {
+        "latitude": 28.549926799999998,
+        "longitude": 77.2491033
+      },
+      "nearby_places": [
+        {
+          "name": "Lotus Temple",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "4 min"
+            }
+          ]
+        },
+        {
+          "name": "Nehru Place",
+          "transportations": [
+            {
+              "type": "Walking",
+              "duration": "3 min"
+            }
+          ]
+        },
+        {
+          "name": "Indira Gandhi International Airport",
+          "transportations": [
+            {
+              "type": "Taxi",
+              "duration": "28 min"
+            },
+            {
+              "type": "Public transport",
+              "duration": "33 min"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

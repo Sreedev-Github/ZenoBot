@@ -2,19 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { CalendarIcon } from "lucide-react";
+import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { addDays, format } from "date-fns";
 import { DateRange } from "react-day-picker";
-
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -34,146 +26,125 @@ function Page() {
   // Responsively adjust number of calendar months shown
   useEffect(() => {
     function handleResize() {
-      setMonthsToShow(window.innerWidth < 768 ? 1 : 2);
+      setMonthsToShow(window.innerWidth < 1024 ? 1 : 2);
     }
 
-    // Set initial value
     handleResize();
-
-    // Add event listener
     window.addEventListener("resize", handleResize);
-
-    // Cleanup
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <div className="py-10 relative w-[100vw] h-[100%] flex flex-col gap-14 justify-center items-center bg-[url(/hero-bg.jpg)] bg-center bg-cover shadow-inner">
+    <div className="relative w-full min-h-screen flex flex-col justify-center items-center py-16 md:py-20 bg-[url(/hero-bg.jpg)] bg-center bg-cover">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50"></div>
 
-      <p className="relative text-base md:text-7xl my-auto font-bold text-center px-2 lg:max-w-[50vw] text-slate-50 drop-shadow-[2px_2px_4px_rgba(0,0,0,0.7)]">
+      {/* Heading */}
+      <motion.h1
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.7 }}
+        className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center px-6 max-w-[90%] md:max-w-[80%] lg:max-w-[70%] text-white drop-shadow-[2px_2px_4px_rgba(0,0,0,0.7)] mb-16 lg:mb-20"
+      >
         Your Ultimate AI Travel Companion: Plan, Explore, Enjoy!
-      </p>
+      </motion.h1>
 
-      <div className="relative mb-auto flex-col flex gap-8 max-w-[80%] min-w-[50%] bg-white bg-opacity-25 rounded-xl p-2 shadow-lg px-4 md:pl-8">
-        <Input
-          type="text"
-          placeholder="From"
-          className="
-            my-auto bg-transparent text-white placeholder:text-white
-            border-b-2 md:border-transparent border-white border-t-0 border-x-0
-            focus:border-b-white
-            transition-[border-color] duration-300 ease-linear
-            focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0
-          "
-        />
+      {/* Search Box */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 1.2 }}
+        className="relative w-[90%] sm:w-[85%] md:w-[80%] lg:pl-8 lg:max-w-5xl bg-white/25 backdrop-blur-sm rounded-xl lg:rounded-full p-4 lg:p-2 shadow-lg"
+      >
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-6 items-center">
+          {/* From Input */}
+          <div className="w-full lg:w-[25%]">
+            <Input
+              type="text"
+              placeholder="From"
+              className="bg-transparent text-white placeholder:text-white/80 border-b-2 border-white border-t-0 border-x-0 rounded-none focus:border-b-white transition-[border-color] duration-300 ease-linear focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 text-lg"
+            />
+          </div>
 
-        <Separator className="hidden md:visible max-w-10 rotate-90 my-auto bg-white" />
+          <Separator className="hidden lg:block h-8 w-px bg-white" />
 
-        <Input
-          type="text"
-          placeholder="To"
-          className=" my-auto bg-transparent text-white placeholder:text-white
-                    border-t-0 border-x-0
-                     border-b-2 md:border-transparent border-white
-                     focus:border-b-white
-                     transition-all duration-300 ease-linear
-                     focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
-        />
+          {/* To Input */}
+          <div className="w-full lg:w-[25%]">
+            <Input
+              type="text"
+              placeholder="To"
+              className="bg-transparent text-white placeholder:text-white/80 border-b-2 border-white border-t-0 border-x-0 rounded-none focus:border-b-white transition-[border-color] duration-300 ease-linear focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 h-12 text-lg"
+            />
+          </div>
 
-        <Separator className="hidden md:visible max-w-10 rotate-90 my-auto bg-white" />
+          <Separator className="hidden lg:block h-8 w-px bg-white" />
 
-        {/* Dropdown for Days */}
-        <div
-          className={cn(
-            "grid gap-2 bg-transparent",
-            !date && "text-muted-foreground"
-          )}
-        >
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={"outline"}
-                className={cn(
-                  "my-auto w-[300px] justify-start text-left font-normal bg-transparent border-none text-white text-lg hover:bg-transparent hover:border-none hover:text-white focus-visible:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2" />
-                {date?.from ? (
-                  date.to ? (
-                    <>
-                      {/* Medium and up: show "Jan 29, 2025" style */}
-                      <span className="hidden md:inline">
-                        {format(date.from, "LLL dd, y")} -{" "}
-                        {format(date.to, "LLL dd, y")}
-                      </span>
-                      {/* Smaller screens: show "Jan 29" style */}
-                      <span className="inline md:hidden">
-                        {format(date.from, "LLL dd")} -{" "}
-                        {format(date.to, "LLL dd")}
-                      </span>
-                    </>
+          {/* Date Picker */}
+          <div className="w-full lg:w-[30%]">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-full justify-start text-left bg-transparent border-b-2 border-white border-t-0 border-x-0 rounded-none text-white text-lg hover:bg-transparent hover:text-white focus-visible:ring-0 focus-visible:outline-none h-12",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-5 w-5" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        <span className="hidden lg:inline">
+                          {format(date.from, "LLL dd, y")} -{" "}
+                          {format(date.to, "LLL dd, y")}
+                        </span>
+                        <span className="inline lg:hidden">
+                          {format(date.from, "LLL dd")} -{" "}
+                          {format(date.to, "LLL dd")}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="hidden md:inline">
+                          {format(date.from, "LLL dd, y")}
+                        </span>
+                        <span className="inline md:hidden">
+                          {format(date.from, "LLL dd")}
+                        </span>
+                      </>
+                    )
                   ) : (
-                    <>
-                      <span className="hidden md:inline">
-                        {format(date.from, "LLL dd, y")}
-                      </span>
-                      <span className="inline md:hidden">
-                        {format(date.from, "LLL dd")}
-                      </span>
-                    </>
-                  )
-                ) : (
-                  <span>Pick a date</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={date?.from}
-                selected={date}
-                onSelect={setDate}
-                numberOfMonths={monthsToShow}
-              />
-            </PopoverContent>
-          </Popover>
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="center">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={setDate}
+                  numberOfMonths={monthsToShow}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+
+          {/* Plan Trip Button */}
+          <div className="w-full lg:w-auto mt-4 lg:mt-0">
+            <Button
+              variant="primary"
+              className="w-full lg:w-auto bg-white text-black rounded-full py-6 px-8 text-lg font-medium hover:bg-transparent hover:text-white transition-all duration-300 ease-linear border-2 border-transparent hover:border-white"
+            >
+              Plan Trip
+            </Button>
+          </div>
         </div>
-
-        {/* Plan Trip Button */}
-
-        <Button
-          variant="primary"
-          className=" bg-white text-black rounded-full md:py-9 md:px-14 md:text-xl hover:bg-transparent hover:text-white transition-all duration-300 ease-linear border-2 border-transparent hover:border-white"
-        >
-          Plan Trip
-        </Button>
-      </div>
+      </motion.div>
     </div>
   );
 }
 
 export default Page;
-
-{
-  /* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="bg-transparent border-none text-white text-lg hover:bg-transparent hover:border-none hover:text-white focus-visible:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none"
-            >
-              Duration <CalendarIcon className="mr-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="w-56 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none">
-            <DropdownMenuLabel>Number of Days</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Something</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> */
-}
