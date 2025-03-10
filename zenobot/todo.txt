@@ -5,8 +5,9 @@ Fix response
 Indian city suporrt & validation - DONE
 Budget - DONE
 Calender support - DONE
+Add another validation for JSON
 
 
 CSS Fixes
 
-- Add spacing in Date Picker input
+- Add spacing in Date Picker input - DONE
