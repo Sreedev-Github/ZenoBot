@@ -17,13 +17,13 @@ function Header() {
         {/* Logo or Website Name */}
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-black dark:text-white">
-            ZenoBot
+            <a href="/try">ZenoBot</a>
           </h1>
         </div>
 
         {/* Navigation Links - Desktop & Tablet */}
         <div className="hidden md:flex align-text-center md:gap-8 lg:gap-32 justify-evenly py-4 px-6 md:px-10 rounded-full bg-black dark:bg-slate-50 text-white dark:text-black outline-2 outline outline-white/25 dark:outline-black/25 shadow-md">
-          <a href="#" className="relative group">
+          <a href="/try" className="relative group">
             Home
             <span className="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-white dark:bg-black rounded-full group-hover:w-full group-hover:left-0 transition-all duration-300"></span>
           </a>

@@ -124,7 +124,7 @@ export default function QueryPage() {
       });
 
       const result = await res.json();
-      console.log('API response:', result); // Log the response
+      console.log("API response:", result); // Log the response
 
       if (res.ok) {
         setResponse(result.reply);
@@ -253,7 +253,9 @@ export default function QueryPage() {
                           {date?.from ? (
                             date.to ? (
                               <span className="flex items-center">
-                                <span className="mr-1">{format(date.from, "LLL dd, y")}</span>
+                                <span className="mr-1">
+                                  {format(date.from, "LLL dd, y")}
+                                </span>
                                 <span className="mx-1">-</span>
                                 <span>{format(date.to, "LLL dd, y")}</span>
                               </span>
@@ -324,9 +326,9 @@ export default function QueryPage() {
                 <div className="mt-8 space-y-6">
                   {(() => {
                     try {
-                      console.log('Parsing response:', response); // Log the response before parsing
+                      console.log("Parsing response:", response); // Log the response before parsing
                       const travelPlan = JSON.parse(response);
-                      console.log('Parsed travel plan:', travelPlan); // Log the parsed travel plan
+                      console.log("Parsed travel plan:", travelPlan); // Log the parsed travel plan
 
                       // Validate if we have all days as per duration
                       const tripDays = parseInt(
@@ -368,32 +370,59 @@ export default function QueryPage() {
                                   Day {index + 1}: {day.date}
                                 </div>
 
-                                {[day.morning, day.afternoon, day.evening].map((activity, actIndex) =>
-                                  activity ? (
-                                    <div key={actIndex} className="p-4 bg-white/5 rounded-lg space-y-2">
-                                      <h3 className="text-lg font-medium">{activity.name}</h3>
-                                      <p className="text-gray-300 text-sm">{activity.description}</p>
-                                      {activity.transportation && (
-                                        <div className="flex items-center gap-2 text-gray-400 text-sm">
-                                          {activity.transportation.includes("flight") && <Plane className="w-4 h-4" />}
-                                          {activity.transportation.includes("bus") && <Bus className="w-4 h-4" />}
-                                          {activity.transportation.includes("train") && <Train className="w-4 h-4" />}
-                                          <span>{activity.transportation}</span>
-                                        </div>
-                                      )}
-                                    </div>
-                                  ) : null
+                                {[day.morning, day.afternoon, day.evening].map(
+                                  (activity, actIndex) =>
+                                    activity ? (
+                                      <div
+                                        key={actIndex}
+                                        className="p-4 bg-white/5 rounded-lg space-y-2"
+                                      >
+                                        <h3 className="text-lg font-medium">
+                                          {activity.name}
+                                        </h3>
+                                        <p className="text-gray-300 text-sm">
+                                          {activity.description}
+                                        </p>
+                                        {activity.transportation && (
+                                          <div className="flex items-center gap-2 text-gray-400 text-sm">
+                                            {activity.transportation.includes(
+                                              "flight"
+                                            ) && <Plane className="w-4 h-4" />}
+                                            {activity.transportation.includes(
+                                              "bus"
+                                            ) && <Bus className="w-4 h-4" />}
+                                            {activity.transportation.includes(
+                                              "train"
+                                            ) && <Train className="w-4 h-4" />}
+                                            <span>
+                                              {activity.transportation}
+                                            </span>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ) : null
                                 )}
 
                                 {day.additionalActivities?.length > 0 && (
                                   <div className="mt-4">
-                                    <h4 className="text-lg font-medium text-yellow-400">Additional Activities</h4>
-                                    {day.additionalActivities.map((extra, extraIndex) => (
-                                      <div key={extraIndex} className="p-4 bg-white/5 rounded-lg space-y-2">
-                                        <h3 className="text-lg font-medium">{extra.name}</h3>
-                                        <p className="text-gray-300 text-sm">{extra.description}</p>
-                                      </div>
-                                    ))}
+                                    <h4 className="text-lg font-medium text-yellow-400">
+                                      Additional Activities
+                                    </h4>
+                                    {day.additionalActivities.map(
+                                      (extra, extraIndex) => (
+                                        <div
+                                          key={extraIndex}
+                                          className="p-4 bg-white/5 rounded-lg space-y-2"
+                                        >
+                                          <h3 className="text-lg font-medium">
+                                            {extra.name}
+                                          </h3>
+                                          <p className="text-gray-300 text-sm">
+                                            {extra.description}
+                                          </p>
+                                        </div>
+                                      )
+                                    )}
                                   </div>
                                 )}
                               </CardContent>
@@ -409,9 +438,7 @@ export default function QueryPage() {
                             <CardContent>
                               <div className="flex items-center gap-2">
                                 <MapPin className="w-4 h-4" />
-                                <span>
-                                  {travelPlan.accommodation.location}
-                                </span>
+                                <span>{travelPlan.accommodation.location}</span>
                               </div>
                               <Badge
                                 className="mt-2 text-white"

@@ -108,7 +108,6 @@ export default function TryPage() {
     });
 
     const url = `/trip-details?${queryParams.toString()}`;
-    console.log("URL:", url); // Check the constructed URL
     router.push(url);
   };
 
