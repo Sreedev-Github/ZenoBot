@@ -1,11 +1,11 @@
-Fix json response
-Make the prompt better
+Fix json response - achieved almost 90% success rate
+Make the prompt better - DONE
 Add multiple desitination support
-Fix response
 Indian city suporrt & validation - DONE
 Budget - DONE
 Calender support - DONE
-Add another validation for JSON
+Add another validation for JSON - DONE
+Fix repeatation and incorrect locations being provided, allow the AI to push the user to explore more cities within the state if the trip length is high.
 
 
 CSS Fixes
