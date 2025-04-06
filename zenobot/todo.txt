@@ -5,6 +5,7 @@ Indian city suporrt & validation - DONE
 Budget - DONE
 Calender support - DONE
 Add another validation for JSON - DONE
+Restrict to 14 days in backend too
 Fix repeatation and incorrect locations being provided, allow the AI to push the user to explore more cities within the state if the trip length is high.
 
 

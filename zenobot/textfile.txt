@@ -1,0 +1,121 @@
+ZenoBot Travel Itinerary Streaming System
+Overview
+ZenoBot is a travel assistant that creates detailed travel itineraries within a single state or region. This README explains how the streaming functionality works in simple terms.
+
+How Streaming Works
+What is Streaming?
+Traditional API responses wait until all data is ready before sending it to your browser. With streaming, data is sent in small chunks as soon as it's available. This is like watching a video that buffers as you go, rather than waiting for the entire video to download.
+
+Components of Our Streaming System
+Our streaming system has three main parts:
+
+Backend API (/api/ask-query/route.js): Talks to the AI model and streams the response
+Frontend Component (QueryStreaming.jsx): Displays the response as it arrives
+AI Model (modelfile): The instruction set for generating travel itineraries
+The Streaming Process Explained
+Step 1: User Makes a Request
+When you enter travel details and click "Get Itinerary":
+
+Your query gets extra instructions added to clarify that only destination activities should be planned
+The frontend sends this to the backend API endpoint
+Step 2: Backend Processing
+The backend:
+
+Takes your request and passes it to the Ollama AI model
+Sets up a stream connection (Server-Sent Events or SSE)
+Starts receiving chunks of the AI response as they're generated
+
+```code
+// This creates a stream for sending data to the frontend
+const stream = new TransformStream();
+const writer = stream.writable.getWriter();
+
+// The AI sends data bit by bit
+const ollamaStream = await ollama.chat({
+  model: 'zenobot',
+  messages: [{ role: 'user', content: query }],
+  stream: true,
+});
+
+// As each chunk arrives, we pass it to the frontend
+for await (const chunk of ollamaStream) {
+  if (chunk.message?.content) {
+    const content = chunk.message.content;
+    await writer.write(
+      encoder.encode(`data: ${JSON.stringify({ content })}\n\n`)
+    );
+  }
+}
+
+```
+
+Step 3: Frontend Processing
+The QueryStreaming.jsx component:
+
+Establishes a connection to receive the streamed data
+Updates the UI as each chunk arrives, showing the raw JSON response
+When the stream completes, parses the JSON into a structured itinerary
+
+``` code
+// Reading the stream as chunks arrive
+while (true) {
+  const { value, done } = await reader.read();
+  if (done) break;
+
+  // Decode the chunk and add it to what we've received so far
+  const chunk = decoder.decode(value, { stream: true });
+  accumulatedResponse += data.content;
+  setStreamingResponse(accumulatedResponse);
+}
+
+```
+Step 4: Displaying the Itinerary
+Once all data is received:
+
+The complete JSON response is parsed into a structured format
+The UI switches from showing the raw data to a nicely formatted itinerary
+Days, activities, locations, and transportation details are displayed in organized sections
+Visual Feedback
+Loading State: Shows "Generating your itinerary..." with a pulsing animation
+Streaming State: Shows "Raw Response (Loading...)" with the incoming JSON
+Complete State: Shows the fully formatted itinerary with color-coded sections for morning, afternoon, and evening activities
+Technical Implementation Details
+1. Server-Sent Events (SSE)
+We use the SSE format to send data from server to client:
+
+```code
+
+data: {"content":"partial response here"}\n\n
+
+```
+
+The \n\n separator marks the end of each chunk.
+
+2. Stream Parsing
+The frontend uses:
+
+ReadableStream and TextDecoder to process incoming chunks
+Regular expressions to extract valid JSON from the text stream
+React state to update the UI as new content arrives
+3. Error Handling
+The system handles several types of errors:
+
+Connection errors (if the API endpoint is unreachable)
+Invalid JSON (if the AI produces malformed output)
+AI refusal (if the AI declines to create an itinerary for some reason)
+Benefits of Streaming
+Better User Experience: Users see progress immediately instead of staring at a blank screen
+Faster Perceived Performance: The first bits of content appear quickly, even if the full response takes time
+Resilience: Even if the connection is interrupted, users still have the partial response
+Troubleshooting
+If the streaming feature isn't working properly:
+
+No response: Check if your API route is correctly set up and Ollama is running
+JSON parsing errors: The AI might be producing malformed JSON. Look at the raw response for clues
+Incomplete itineraries: The AI might be stopping early. Check your model configuration
+Technology Stack
+Frontend: React, Next.js
+Backend: Next.js API Routes
+AI Model: Llama 3.2 through Ollama
+Streaming Protocol: Server-Sent Events (SSE)
+UI Framework: Tailwind CSS
