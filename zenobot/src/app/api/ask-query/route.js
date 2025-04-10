@@ -29,6 +29,7 @@ export async function POST(request) {
 
     // Helper function to send events
     const sendEvent = async (type, data) => {
+      // console.log(`Sending event: ${type}`, data); // Log the event being sent
       await writer.write(
         encoder.encode(`data: ${JSON.stringify({ type, ...data })}\n\n`)
       );
@@ -97,10 +98,50 @@ export async function POST(request) {
 
                 if (section === "dayStart") {
                   currentDay++;
+                  console.log(`Starting new day: ${currentDay}`);
 
-                  // Extract date if available
-                  const dateMatch = buffer.match(/"date":\s*"([^"]+)"/);
-                  const date = dateMatch ? dateMatch[1] : "";
+                  // Wait until the buffer contains the full "date" string
+                  let date = null;
+                  const dateRegex = /"date":\s*"([^"]+)"/;
+
+                  // Keep processing chunks until the date is found
+                  while (!date) {
+                    const dateMatch = buffer.match(dateRegex);
+
+                    if (dateMatch) {
+                      date = dateMatch[1];
+                      console.log(
+                        `Extracted date for day ${currentDay}:`,
+                        date
+                      );
+                    } else {
+                      console.warn(
+                        `Date not found for day ${currentDay} yet. Waiting for more data.`
+                      );
+
+                      // Wait for the next chunk to arrive
+                      const { value, done } = await ollamaStream[
+                        Symbol.asyncIterator
+                      ]().next();
+                      if (done) {
+                        console.error(
+                          `Stream ended before date was found for day ${currentDay}`
+                        );
+                        break;
+                      }
+
+                      const content = value.message?.content || "";
+                      buffer += content;
+                      completeResponse.rawResponse += content; // Save raw response
+                    }
+                  }
+
+                  if (!date) {
+                    console.error(
+                      `Failed to extract date for day ${currentDay}`
+                    );
+                    continue; // Skip processing this day if the date is not found
+                  }
 
                   // Save to processed data
                   completeResponse.processedData.days[currentDay] = {
@@ -116,6 +157,7 @@ export async function POST(request) {
 
                   propertiesInProgress = {};
                 } else if (section === "dayEnd") {
+                  console.log(`Ending day: ${currentDay}`);
                   await sendEvent("sectionEnd", {
                     section,
                     dayNumber: currentDay,
@@ -123,33 +165,12 @@ export async function POST(request) {
 
                   // Reset section to prepare for next day
                   currentSection = null;
-                } else {
-                  // Initialize section in processed data
-                  if (
-                    !completeResponse.processedData.days[currentDay]?.sections[
-                      section
-                    ]
-                  ) {
-                    // Initialize the day if it somehow doesn't exist
-                    if (!completeResponse.processedData.days[currentDay]) {
-                      completeResponse.processedData.days[currentDay] = {
-                        date: "",
-                        sections: {},
-                      };
-                    }
-
-                    completeResponse.processedData.days[currentDay].sections[
-                      section
-                    ] = {};
-                  }
-
-                  await sendEvent("sectionStart", {
-                    section,
-                    dayNumber: currentDay,
-                  });
-
-                  propertiesInProgress[section] = {};
                 }
+
+                // Trim the buffer to remove processed content
+                buffer = buffer.substring(
+                  buffer.indexOf(marker) + marker.length
+                );
               }
             }
 
@@ -205,13 +226,19 @@ export async function POST(request) {
                     if (!sentProperties.has(propId)) {
                       sentProperties.add(propId);
 
-                      await sendEvent("property", {
-                        section: currentSection,
-                        key,
-                        value,
-                        dayNumber: currentDay,
-                      });
+                      if (key && value && currentSection) {
+                        await sendEvent("property", {
+                          section: currentSection,
+                          key,
+                          value,
+                          dayNumber: currentDay,
+                        });
+                      }
 
+                      // Ensure propertiesInProgress[currentSection] is initialized
+                      if (!propertiesInProgress[currentSection]) {
+                        propertiesInProgress[currentSection] = {}; // Initialize if undefined
+                      }
                       propertiesInProgress[currentSection][key] = value;
 
                       // Make sure day exists in processed data
