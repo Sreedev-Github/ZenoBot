@@ -23,14 +23,14 @@ export async function POST(req) {
       )}&api_key=${process.env.GEOCODE_API_KEY}`
     );
 
-    console.log("Response:", response);
+    // console.log("Response:", response);
 
     if (!response.ok) {
       throw new Error(`Geocode API returned status ${response.status}`);
     }
 
     const data = await response.json();
-    console.log("Data:", data);
+    // console.log("Data:", data);
     return NextResponse.json({ data });
   } catch (error) {
     console.error("Error getting geolocation:", error.message);

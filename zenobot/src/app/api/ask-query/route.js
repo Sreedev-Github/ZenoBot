@@ -98,7 +98,7 @@ export async function POST(request) {
 
                 if (section === "dayStart") {
                   currentDay++;
-                  console.log(`Starting new day: ${currentDay}`);
+                  // console.log(`Starting new day: ${currentDay}`);
 
                   // Wait until the buffer contains the full "date" string
                   let date = null;
@@ -110,10 +110,6 @@ export async function POST(request) {
 
                     if (dateMatch) {
                       date = dateMatch[1];
-                      console.log(
-                        `Extracted date for day ${currentDay}:`,
-                        date
-                      );
                     } else {
                       console.warn(
                         `Date not found for day ${currentDay} yet. Waiting for more data.`
@@ -157,7 +153,7 @@ export async function POST(request) {
 
                   propertiesInProgress = {};
                 } else if (section === "dayEnd") {
-                  console.log(`Ending day: ${currentDay}`);
+                  // console.log(`Ending day: ${currentDay}`);
                   await sendEvent("sectionEnd", {
                     section,
                     dayNumber: currentDay,
@@ -287,7 +283,7 @@ export async function POST(request) {
 
           const newResponse = new ResponseModel(responseData);
           await newResponse.save();
-          console.log("Response saved to MongoDB successfully");
+          // console.log("Response saved to MongoDB successfully");
         } catch (dbError) {
           console.error("Error saving to MongoDB:", dbError);
         }

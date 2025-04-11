@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Send,
   CalendarIcon,
   Minus,
@@ -24,6 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { useTravelContext } from "../../context/travelContext";
 
 const questions = [
   "Enter your starting location...",
@@ -96,19 +98,19 @@ export default function TryPage() {
     return options;
   }, []);
 
+  const { setTravelData } = useTravelContext();
   const router = useRouter();
 
   const handleSubmit = () => {
-    const queryParams = new URLSearchParams({
-      from: from || "",
-      to: to || "",
+    const travelData = {
+      from,
+      to,
       date: travelDate ? format(travelDate, "yyyy-MM-dd") : "",
-      days: tripDuration.toString(),
-      budget: selectedBudget || "",
-    });
-
-    const url = `/trip-details?${queryParams.toString()}`;
-    router.push(url);
+      duration: tripDuration,
+      budget: selectedBudget,
+    };
+    setTravelData(travelData);
+    router.push("/trip-details");
   };
 
   const validateStep = () => {
@@ -221,7 +223,6 @@ export default function TryPage() {
             handleSubmit();
           } else {
             // Otherwise, select this budget option
-            console.log("Selecting budget:", selectedOption.value); // Debug log
             setSelectedBudget(selectedOption.value);
           }
         }
@@ -353,6 +354,24 @@ export default function TryPage() {
     }
   }, [currentStep, selectedBudget]);
 
+  useEffect(() => {
+    if (isDatePickerOpen) {
+      const handleClickOutside = (event) => {
+        const calendarElement = document.querySelector(".calendar-dropdown");
+        if (calendarElement && !calendarElement.contains(event.target)) {
+          if (!event.target.closest("button[data-calendar-trigger]")) {
+            setIsDatePickerOpen(false);
+          }
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }
+  }, [isDatePickerOpen]);
+
   const renderInput = () => {
     switch (currentStep) {
       case 0:
@@ -458,42 +477,152 @@ export default function TryPage() {
       case 2:
         return (
           <div className="w-full">
-            <Popover open={isDatePickerOpen} onOpenChange={setIsDatePickerOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  tabIndex="0" // Make it focusable
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left bg-transparent dark:border-white/30 border-black/30 dark:text-white text-black text-xl py-3 px-2 rounded-none  hover:border-black dark:hover:border-white hover:bg-transparent focus-visible:ring-0 focus-visible:outline-none",
-                    !travelDate && "text-white/50 dark:text-black/50"
-                  )}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      setIsDatePickerOpen(true);
-                    }
-                  }}
-                  autoFocus // Added autoFocus attribute
-                >
+            <div className="relative">
+              <button
+                data-calendar-trigger
+                className="w-full flex items-center justify-between bg-transparent border-b-2 dark:border-white/30 border-black/40 text-black dark:text-white text-xl py-3 px-2 focus:outline-none"
+                onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+              >
+                <span className="flex items-center">
                   <CalendarIcon className="mr-2 h-5 w-5" />
                   {travelDate
                     ? format(travelDate, "MMM dd, yyyy")
                     : "Pick a date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto overflow-hidden p-0 bg-white dark:bg-black text-black dark:text-white border border-white/20 dark:border-black/20 rounded-md shadow-md">
-                <Calendar
-                  mode="single"
-                  selected={travelDate}
-                  onSelect={(date) => {
-                    setTravelDate(date);
-                    setIsDatePickerOpen(false); // Close the Popover
-                  }}
-                  initialFocus
-                  className="w-auto border-none shadow-none"
+                </span>
+                <ChevronDown
+                  className={`h-5 w-5 transition-transform ${
+                    isDatePickerOpen ? "rotate-180" : ""
+                  }`}
                 />
-              </PopoverContent>
-            </Popover>
+              </button>
+
+              {isDatePickerOpen && (
+                <div className="absolute z-50 calendar-dropdown mt-1 left-1/2 -translate-x-1/2 w-full max-w-xs bg-white dark:bg-black rounded-lg shadow-xl p-4 border border-gray-200 dark:border-gray-700">
+                  {/* Header with month navigation */}
+                  <div className="flex justify-between items-center mb-4">
+                    <button
+                      onClick={() => {
+                        const newDate = new Date(travelDate || new Date());
+                        newDate.setMonth(newDate.getMonth() - 1);
+                        setTravelDate(newDate);
+                      }}
+                      className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900"
+                    >
+                      <ChevronLeft className="h-4 w-4" />
+                    </button>
+
+                    <h3 className="text-black dark:text-white font-medium">
+                      {format(travelDate || new Date(), "MMMM yyyy")}
+                    </h3>
+
+                    <button
+                      onClick={() => {
+                        const newDate = new Date(travelDate || new Date());
+                        newDate.setMonth(newDate.getMonth() + 1);
+                        setTravelDate(newDate);
+                      }}
+                      className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900"
+                    >
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* Day labels */}
+                  <div className="grid grid-cols-7 gap-1 mb-2">
+                    {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
+                      <div
+                        key={day}
+                        className="text-center text-xs font-medium text-gray-500 dark:text-gray-400"
+                      >
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Calendar grid */}
+                  <div className="grid grid-cols-7 gap-1">
+                    {(() => {
+                      const date = travelDate || new Date();
+                      const year = date.getFullYear();
+                      const month = date.getMonth();
+
+                      // Get first day of month
+                      const firstDayOfMonth = new Date(year, month, 1);
+                      const daysInMonth = new Date(
+                        year,
+                        month + 1,
+                        0
+                      ).getDate();
+
+                      // Calculate days to display from previous month
+                      const firstDayIndex = firstDayOfMonth.getDay(); // 0 = Sunday
+
+                      // Create array of dates to display
+                      const daysArray = [];
+
+                      // Add empty cells for days from previous month
+                      for (let i = 0; i < firstDayIndex; i++) {
+                        daysArray.push(
+                          <div key={`empty-${i}`} className="h-8 w-8"></div>
+                        );
+                      }
+
+                      // Add days of current month
+                      for (let day = 1; day <= daysInMonth; day++) {
+                        const currentDate = new Date(year, month, day);
+                        const isSelected =
+                          travelDate &&
+                          currentDate.getDate() === travelDate.getDate() &&
+                          currentDate.getMonth() === travelDate.getMonth() &&
+                          currentDate.getFullYear() ===
+                            travelDate.getFullYear();
+
+                        const isToday =
+                          currentDate.getDate() === new Date().getDate() &&
+                          currentDate.getMonth() === new Date().getMonth() &&
+                          currentDate.getFullYear() ===
+                            new Date().getFullYear();
+
+                        daysArray.push(
+                          <button
+                            key={day}
+                            onClick={() => {
+                              setTravelDate(new Date(year, month, day));
+                              setIsDatePickerOpen(false);
+                            }}
+                            className={`flex items-center justify-center h-8 w-8 rounded-full text-sm transition-colors
+                        ${
+                          isSelected
+                            ? "bg-black dark:bg-white text-white dark:text-black font-medium"
+                            : isToday
+                            ? "bg-gray-200 dark:bg-gray-800 text-black dark:text-white font-medium"
+                            : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
+                        }`}
+                          >
+                            {day}
+                          </button>
+                        );
+                      }
+
+                      return daysArray;
+                    })()}
+                  </div>
+
+                  {/* Today button */}
+                  <div className="mt-4 flex justify-center">
+                    <button
+                      onClick={() => {
+                        setTravelDate(new Date());
+                        setIsDatePickerOpen(false);
+                      }}
+                      className="px-3 py-1.5 text-sm bg-black dark:bg-white text-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 font-medium transition-colors"
+                    >
+                      Today
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         );
       case 3:

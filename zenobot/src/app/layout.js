@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import PageFadeWrapper from "@/components/PageFadeWrapper";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { TravelProvider } from "@/context/travelContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,8 +27,10 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <Header />
-          <PageFadeWrapper>{children}</PageFadeWrapper>
+          <TravelProvider>
+            <Header />
+            <PageFadeWrapper>{children}</PageFadeWrapper>
+          </TravelProvider>
         </ThemeProvider>
       </body>
     </html>
