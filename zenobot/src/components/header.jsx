@@ -7,7 +7,7 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="absolute w-full p-4 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-md">
+    <div className="relative w-full p-4 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-md">
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}

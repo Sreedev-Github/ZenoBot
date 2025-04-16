@@ -24,6 +24,7 @@
     "dotenv": "^16.4.7",
     "framer-motion": "^12.4.7",
     "google-search-results-nodejs": "^2.1.0",
+    "gsap": "^3.12.7",
     "lodash": "^4.17.21",
     "lucide-react": "^0.469.0",
     "moment": "^2.30.1",
