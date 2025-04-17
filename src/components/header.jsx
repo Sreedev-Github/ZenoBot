@@ -7,7 +7,7 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="relative w-full p-4 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md shadow-md">
+    <div className="relative w-full p-4 z-50 bg-nav-bg dark:bg-black/80 backdrop-blur-md shadow-md">
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -16,7 +16,7 @@ function Header() {
       >
         {/* Logo */}
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-black dark:text-white">
+          <h1 className="text-2xl md:text-3xl font-bold text-white dark:text-white">
             <a href="/home">ZenoBot</a>
           </h1>
         </div>

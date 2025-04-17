@@ -49,6 +49,16 @@ const config = {
           4: "hsl(var(--chart-4))",
           5: "hsl(var(--chart-5))",
         },
+        // Custom color palette
+        "background-white": "#F5F9F8",
+        "secondary-background-white": "#EAF4F2",
+        "activity-background": "#D0E8E2",
+        "nav-bg": "#264653",
+        "text-green": {
+          600: "#283D3B",
+          800: "#1E2D2F",
+        },
+        "muted-gray": "#5F5F5F",
       },
       borderRadius: {
         lg: "var(--radius)",
