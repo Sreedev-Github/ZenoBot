@@ -1,0 +1,143 @@
+TEMPLATE """
+{{#user~}}
+I'm planning a 4-day trip to Rajasthan from 10/08/2025 to 13/08/2025. Starting in Jaipur.
+{{~/user}}
+
+{{#assistant~}}
+{
+"tripDetails": {
+"tripLengthHigh": true
+},
+"itinerary": [
+{
+"dayStart": "[DayStart]",
+"date": "10/08/2025",
+"morningStart": "[MorningStart]",
+"morning": {
+"name": "Explore Amer Fort",
+"location": "Jaipur, Rajasthan",
+"description": "Start your journey with a visit to Amer Fort, a majestic 16th-century fort with intricate architecture and sweeping views.",
+"transportation": "Car or Auto-Rickshaw"
+},
+"afternoonStart": "[AfternoonStart]",
+"afternoon": {
+"name": "City Palace Visit",
+"location": "Jaipur, Rajasthan",
+"description": "Tour the royal residence of the Maharaja, featuring museums and courtyards with stunning Rajasthani architecture.",
+"transportation": "Walking or Auto-Rickshaw"
+},
+"eveningStart": "[EveningStart]",
+"evening": {
+"name": "View Sunset at Nahargarh Fort",
+"location": "Jaipur, Rajasthan",
+"description": "Head to Nahargarh Fort for a panoramic view of Jaipur city as the sun sets behind the Aravalli hills.",
+"transportation": "Car or Taxi"
+},
+"additionalActivityStart": "[AdditionalActivityStart]",
+"additionalActivity": {
+"name": "Visit Jantar Mantar Observatory",
+"location": "Jaipur, Rajasthan",
+"description": "Explore this UNESCO World Heritage site featuring astronomical instruments dating back to the 18th century."
+},
+"dayEnd": "[DayEnd]"
+},
+{
+"dayStart": "[DayStart]",
+"date": "11/08/2025",
+"morningStart": "[MorningStart]",
+"morning": {
+"name": "Explore Mehrangarh Fort",
+"location": "Jodhpur, Rajasthan",
+"description": "Begin your day at the imposing Mehrangarh Fort, which towers above the blue city of Jodhpur.",
+"transportation": "Car"
+},
+"afternoonStart": "[AfternoonStart]",
+"afternoon": {
+"name": "Visit Jaswant Thada",
+"location": "Jodhpur, Rajasthan",
+"description": "Visit this white marble cenotaph built in memory of Maharaja Jaswant Singh II, surrounded by peaceful gardens.",
+"transportation": "Walking"
+},
+"eveningStart": "[EveningStart]",
+"evening": {
+"name": "Stroll Through Clock Tower Market",
+"location": "Jodhpur, Rajasthan",
+"description": "Wander through this vibrant bazaar to experience local handicrafts and traditional Rajasthani culture.",
+"transportation": "Walking"
+},
+"additionalActivityStart": "[AdditionalActivityStart]",
+"additionalActivity": {
+"name": "Visit Umaid Bhawan Palace Exterior",
+"location": "Jodhpur, Rajasthan",
+"description": "Admire the grand architecture of one of the last great palaces of India from the outside."
+},
+"dayEnd": "[DayEnd]"
+},
+{
+"dayStart": "[DayStart]",
+"date": "12/08/2025",
+"morningStart": "[MorningStart]",
+"morning": {
+"name": "Explore Udaipur City Palace",
+"location": "Udaipur, Rajasthan",
+"description": "Start your Udaipur visit at the City Palace, which offers beautiful courtyards and views of Lake Pichola.",
+"transportation": "Walking or Taxi"
+},
+"afternoonStart": "[AfternoonStart]",
+"afternoon": {
+"name": "Visit Jagdish Temple",
+"location": "Udaipur, Rajasthan",
+"description": "Marvel at the intricate carvings of this 17th-century temple located near the City Palace.",
+"transportation": "Walking"
+},
+"eveningStart": "[EveningStart]",
+"evening": {
+"name": "Sunset at Fateh Sagar Lake",
+"location": "Udaipur, Rajasthan",
+"description": "Relax by the serene waters of Fateh Sagar Lake and enjoy the peaceful sunset.",
+"transportation": "Car or Auto-Rickshaw"
+},
+"additionalActivityStart": "[AdditionalActivityStart]",
+"additionalActivity": {
+"name": "Saheliyon Ki Bari Visit",
+"location": "Udaipur, Rajasthan",
+"description": "Visit this lush garden adorned with fountains and marble pavilions, built for royal ladies."
+},
+"dayEnd": "[DayEnd]"
+},
+{
+"dayStart": "[DayStart]",
+"date": "13/08/2025",
+"morningStart": "[MorningStart]",
+"morning": {
+"name": "Explore Chittorgarh Fort",
+"location": "Chittorgarh, Rajasthan",
+"description": "Visit one of the largest forts in India, rich with stories of Rajput valor and resistance.",
+"transportation": "Car"
+},
+"afternoonStart": "[AfternoonStart]",
+"afternoon": {
+"name": "Visit Vijay Stambha",
+"location": "Chittorgarh, Rajasthan",
+"description": "See the Victory Tower, built in the 15th century to commemorate triumph in battle, offering panoramic views.",
+"transportation": "Walking"
+},
+"eveningStart": "[EveningStart]",
+"evening": {
+"name": "Relax at Rana Kumbha Palace Ruins",
+"location": "Chittorgarh, Rajasthan",
+"description": "Explore the ruins of the palace once home to the legendary queen Padmini and Maharana Kumbha.",
+"transportation": "Walking"
+},
+"additionalActivityStart": "[AdditionalActivityStart]",
+"additionalActivity": {
+"name": "Visit Kirti Stambha",
+"location": "Chittorgarh, Rajasthan",
+"description": "See this ornate 12th-century tower dedicated to Adinatha, the first Jain Tirthankara."
+},
+"dayEnd": "[DayEnd]"
+}
+]
+}
+{{~/assistant}}
+"""

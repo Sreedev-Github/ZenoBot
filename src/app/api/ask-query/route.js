@@ -111,18 +111,11 @@ export async function POST(request) {
                     if (dateMatch) {
                       date = dateMatch[1];
                     } else {
-                      console.warn(
-                        `Date not found for day ${currentDay} yet. Waiting for more data.`
-                      );
-
                       // Wait for the next chunk to arrive
                       const { value, done } = await ollamaStream[
                         Symbol.asyncIterator
                       ]().next();
                       if (done) {
-                        console.error(
-                          `Stream ended before date was found for day ${currentDay}`
-                        );
                         break;
                       }
 
@@ -133,9 +126,6 @@ export async function POST(request) {
                   }
 
                   if (!date) {
-                    console.error(
-                      `Failed to extract date for day ${currentDay}`
-                    );
                     continue; // Skip processing this day if the date is not found
                   }
 
@@ -281,17 +271,46 @@ export async function POST(request) {
             sessionId,
           };
 
+          // Add additional logging to debug MongoDB save issues
+          console.log("Saving response to MongoDB with session ID:", sessionId);
+          
           const newResponse = new ResponseModel(responseData);
           await newResponse.save();
-          // console.log("Response saved to MongoDB successfully");
+          console.log("Response saved to MongoDB successfully with ID:", newResponse._id);
+          
+          // Send the MongoDB ID back to the client for reference
+          await sendEvent("savedToDb", { 
+            success: true, 
+            responseId: newResponse._id.toString(),
+            sessionId 
+          });
         } catch (dbError) {
           console.error("Error saving to MongoDB:", dbError);
+          await sendEvent("savedToDb", { success: false, error: dbError.message });
         }
       } catch (error) {
         console.error("Error in streaming:", error);
-        await sendEvent("error", { message: error.message });
+        // Only try to write if the writer is not closed
+        try {
+          await sendEvent("error", { message: error.message });
+        } catch (writeError) {
+          console.error("Error sending error event:", writeError);
+        }
       } finally {
-        await writer.close();
+        // Safely close the writer
+        try {
+          // Check if the writer is still writable before attempting to close
+          if (!writer.closed) {
+            try {
+              await writer.close();
+            } catch (e) {
+              // Writer might have been closed already, which is fine
+              console.log("Note: Writer was already closed");
+            }
+          }
+        } catch (closeError) {
+          console.error("Error checking writer state:", closeError);
+        }
       }
     })();
 

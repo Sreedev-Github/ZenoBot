@@ -17,14 +17,6 @@ import {
 } from "lucide-react";
 import states from "@/utils/stateCities.json";
 import { format } from "date-fns";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
 import { useTravelContext } from "../../context/travelContext";
 
 const questions = [
@@ -395,19 +387,19 @@ export default function TryPage() {
                 }
               }}
               onKeyDown={handleKeyDown}
-              className="w-full bg-transparent border-b-2 dark:border-white/30 text-black dark:text-white text-xl py-3 px-2 focus:outline-none border-black/40 transition-colors"
+              className="w-full bg-transparent border-b-2 dark:border-white/30 text-text-green-800 dark:text-white text-xl py-3 px-2 focus:outline-none border-text-green-800/40 transition-colors"
               placeholder="Enter your starting location..."
               autoFocus
             />
             {showDropdown && filteredOptions.length > 0 && (
-              <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-black/80 dark:bg-white border border-white/20 dark:border-white/20 rounded-md z-50">
+              <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-white/95 dark:bg-black/90 border border-text-green-800/20 dark:border-white/20 rounded-md z-50 shadow-[0px_5px_15px_rgba(0,0,0,0.1)]">
                 {filteredOptions.map((option, index) => (
                   <div
                     key={index}
-                    className={`px-4 py-2 cursor-pointer text-white dark:text-black ${
+                    className={`px-4 py-2 cursor-pointer text-text-green-800 dark:text-white ${
                       selectedOptionIndex === index
-                        ? "bg-white/20 dark:bg-black/20"
-                        : "hover:bg-white/10 dark:hover:bg-black/10"
+                        ? "bg-text-green-800/10 dark:bg-white/20"
+                        : "hover:bg-text-green-800/5 dark:hover:bg-white/10"
                     }`}
                     onClick={() => {
                       setFrom(option);
@@ -445,19 +437,19 @@ export default function TryPage() {
                 }
               }}
               onKeyDown={handleKeyDown}
-              className="w-full bg-transparent border-b-2 dark:border-white/30 text-black dark:text-white text-xl py-3 px-2 focus:outline-none border-black/40 transition-colors"
+              className="w-full bg-transparent border-b-2 dark:border-white/30 text-text-green-800 dark:text-white text-xl py-3 px-2 focus:outline-none border-text-green-800/40 transition-colors"
               placeholder="Enter your destination..."
               autoFocus
             />
             {showDropdown && filteredOptions.length > 0 && (
-              <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-black/80 dark:bg-white border border-white/20 dark:border-white/20 rounded-md z-50">
+              <div className="absolute w-full mt-1 max-h-60 overflow-y-auto bg-white/95 dark:bg-black/90 border border-text-green-800/20 dark:border-white/20 rounded-md z-50 shadow-[0px_5px_15px_rgba(0,0,0,0.1)]">
                 {filteredOptions.map((option, index) => (
                   <div
                     key={index}
-                    className={`px-4 py-2 cursor-pointer text-white dark:text-black ${
+                    className={`px-4 py-2 cursor-pointer text-text-green-800 dark:text-white ${
                       selectedOptionIndex === index
-                        ? "bg-white/20 dark:bg-black/20"
-                        : "hover:bg-white/10 dark:hover:bg-black/10"
+                        ? "bg-text-green-800/10 dark:bg-white/20"
+                        : "hover:bg-text-green-800/5 dark:hover:bg-white/10"
                     }`}
                     onClick={() => {
                       setTo(option);
@@ -480,7 +472,7 @@ export default function TryPage() {
             <div className="relative">
               <button
                 data-calendar-trigger
-                className="w-full flex items-center justify-between bg-transparent border-b-2 dark:border-white/30 border-black/40 text-black dark:text-white text-xl py-3 px-2 focus:outline-none"
+                className="w-full flex items-center justify-between bg-transparent border-b-2 dark:border-white/30 border-text-green-800/40 text-text-green-800 dark:text-white text-xl py-3 px-2 focus:outline-none"
                 onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
               >
                 <span className="flex items-center">
@@ -497,7 +489,7 @@ export default function TryPage() {
               </button>
 
               {isDatePickerOpen && (
-                <div className="absolute z-50 calendar-dropdown mt-1 left-1/2 -translate-x-1/2 w-full max-w-xs bg-white dark:bg-black rounded-lg shadow-xl p-4 border border-gray-200 dark:border-gray-700">
+                <div className="absolute z-50 calendar-dropdown mt-1 left-1/2 -translate-x-1/2 w-full max-w-xs bg-white dark:bg-black rounded-lg shadow-xl p-4 border border-text-green-800/20 dark:border-gray-700">
                   {/* Header with month navigation */}
                   <div className="flex justify-between items-center mb-4">
                     <button
@@ -506,12 +498,12 @@ export default function TryPage() {
                         newDate.setMonth(newDate.getMonth() - 1);
                         setTravelDate(newDate);
                       }}
-                      className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900"
+                      className="p-2 rounded-full text-text-green-800 dark:text-gray-300 hover:bg-text-green-800/5 dark:hover:bg-gray-900"
                     >
                       <ChevronLeft className="h-4 w-4" />
                     </button>
 
-                    <h3 className="text-black dark:text-white font-medium">
+                    <h3 className="text-text-green-800 dark:text-white font-medium">
                       {format(travelDate || new Date(), "MMMM yyyy")}
                     </h3>
 
@@ -521,7 +513,7 @@ export default function TryPage() {
                         newDate.setMonth(newDate.getMonth() + 1);
                         setTravelDate(newDate);
                       }}
-                      className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900"
+                      className="p-2 rounded-full text-text-green-800 dark:text-gray-300 hover:bg-text-green-800/5 dark:hover:bg-gray-900"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </button>
@@ -532,7 +524,7 @@ export default function TryPage() {
                     {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
                       <div
                         key={day}
-                        className="text-center text-xs font-medium text-gray-500 dark:text-gray-400"
+                        className="text-center text-xs font-medium text-text-green-800/60 dark:text-gray-400"
                       >
                         {day}
                       </div>
@@ -593,10 +585,10 @@ export default function TryPage() {
                             className={`flex items-center justify-center h-8 w-8 rounded-full text-sm transition-colors
                         ${
                           isSelected
-                            ? "bg-black dark:bg-white text-white dark:text-black font-medium"
+                            ? "bg-text-green-800 dark:bg-white text-white dark:text-black font-medium"
                             : isToday
-                            ? "bg-gray-200 dark:bg-gray-800 text-black dark:text-white font-medium"
-                            : "text-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
+                            ? "bg-text-green-800/20 dark:bg-gray-800 text-text-green-800 dark:text-white font-medium"
+                            : "text-text-green-800 dark:text-white hover:bg-text-green-800/10 dark:hover:bg-gray-800"
                         }`}
                           >
                             {day}
@@ -615,7 +607,7 @@ export default function TryPage() {
                         setTravelDate(new Date());
                         setIsDatePickerOpen(false);
                       }}
-                      className="px-3 py-1.5 text-sm bg-black dark:bg-white text-white dark:text-black rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 font-medium transition-colors"
+                      className="px-3 py-1.5 text-sm bg-text-green-800 dark:bg-white text-white dark:text-black rounded-md hover:bg-text-green-800/90 dark:hover:bg-gray-200 font-medium transition-colors"
                     >
                       Today
                     </button>
@@ -636,14 +628,14 @@ export default function TryPage() {
                 disabled={tripDuration <= 1}
                 className={`flex items-center justify-center w-12 h-12 rounded-full border ${
                   tripDuration > 1
-                    ? "border-black/50 dark:border-white/50 text-black dark:text-white"
-                    : "border-black/20 dark:border-white/20 text-black/30 dark:text-white/30"
+                    ? "border-text-green-800/50 dark:border-white/50 text-text-green-800 dark:text-white"
+                    : "border-text-green-800/20 dark:border-white/20 text-text-green-800/30 dark:text-white/30"
                 }`}
               >
                 <Minus className="w-5 h-5" />
               </motion.button>
 
-              <div className="text-black dark:text-white text-4xl font-bold w-24 text-center">
+              <div className="text-text-green-800 dark:text-white text-4xl font-bold w-24 text-center">
                 {tripDuration}
               </div>
 
@@ -654,14 +646,14 @@ export default function TryPage() {
                 disabled={tripDuration >= 14}
                 className={`flex items-center justify-center w-12 h-12 rounded-full border ${
                   tripDuration < 14
-                    ? "border-black/50 dark:border-white/50 text-black dark:text-white"
-                    : "border-black/20 dark:border-white/20 text-black/30 dark:text-white/30"
+                    ? "border-text-green-800/50 dark:border-white/50 text-text-green-800 dark:text-white"
+                    : "border-text-green-800/20 dark:border-white/20 text-text-green-800/30 dark:text-white/30"
                 }`}
               >
                 <Plus className="w-5 h-5" />
               </motion.button>
             </div>
-            <div className="text-black/60 dark:text-white/60 text-center mt-4">
+            <div className="text-text-green-800/60 dark:text-white/60 text-center mt-4">
               {tripDuration === 1 ? "day" : "days"}
             </div>
           </div>
@@ -670,7 +662,7 @@ export default function TryPage() {
         return (
           <div
             className="w-full flex flex-col items-center focus-visible:ring-0 focus-visible:outline-none"
-            tabIndex="0" // Change from -1 to 0 to make it focusable
+            tabIndex="0"
             onKeyDown={handleKeyDown}
             ref={(el) => {
               // Auto-focus this container when step 4 is active
@@ -689,13 +681,13 @@ export default function TryPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`w-full max-w-md flex items-center justify-center p-4 rounded-lg border transition-colors cursor-pointer mb-4
-                      ${
-                        isSelected
-                          ? "bg-black dark:bg-white text-white dark:text-black border-black/50 dark:border-white/50"
-                          : isFocused
-                          ? "bg-white/70 dark:bg-black/70 text-black dark:text-white border-black/70 dark:border-white/70 ring-2 ring-black dark:ring-white"
-                          : "bg-white/50 dark:bg-black/20 hover:bg-white/80 dark:hover:bg-black/80 text-black dark:text-white border-black/50 dark:border-white/50"
-                      }`}
+                    ${
+                      isSelected
+                        ? "bg-text-green-800 dark:bg-white text-white dark:text-black border-text-green-800/50 dark:border-white/50"
+                        : isFocused
+                        ? "bg-white/70 dark:bg-black/70 text-text-green-800 dark:text-white border-text-green-800/70 dark:border-white/70 ring-2 ring-text-green-800 dark:ring-white"
+                        : "bg-white/50 dark:bg-black/20 hover:bg-white/80 dark:hover:bg-black/80 text-text-green-800 dark:text-white border-text-green-800/50 dark:border-white/50"
+                    }`}
                   onClick={() => {
                     if (selectedBudget === option.value) {
                       // If already selected, submit the form
@@ -723,12 +715,12 @@ export default function TryPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black">
+    <div className="min-h-screen flex items-center justify-center bg-background-white dark:bg-black">
       <div className="w-full max-w-xl px-4 py-12 relative">
         {/* Progress bar - at top of screen */}
         <div className="fixed top-0 left-0 w-full bg-white/5 dark:bg-black/5 h-1">
           <motion.div
-            className="h-full bg-black dark:bg-white"
+            className="h-full bg-text-green-800 dark:bg-white"
             initial={{ width: 0 }}
             animate={{
               width: `${((currentStep + 1) / questions.length) * 100}%`,
@@ -746,10 +738,10 @@ export default function TryPage() {
                   key={index}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     index === currentStep
-                      ? "w-4 bg-black dark:bg-white"
+                      ? "w-4 bg-text-green-800 dark:bg-white"
                       : index < currentStep
-                      ? "bg-black/80 dark:bg-white/80"
-                      : "bg-black/30 dark:bg-white/30"
+                      ? "bg-text-green-800/80 dark:bg-white/80"
+                      : "bg-text-green-800/30 dark:bg-white/30"
                   }`}
                 />
               ))}
@@ -765,7 +757,7 @@ export default function TryPage() {
               transition={{ duration: 0.3 }}
               className="mb-10"
             >
-              <h2 className="text-black dark:text-white text-2xl sm:text-3xl font-bold mb-8 text-center px-4">
+              <h2 className="text-text-green-800 dark:text-white text-2xl sm:text-3xl font-bold mb-8 text-center px-4">
                 {questions[currentStep]}
               </h2>
             </motion.div>
@@ -834,7 +826,7 @@ export default function TryPage() {
                     key={index}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: index < currentStep ? 1 : 0 }}
-                    className="bg-black/10 dark:bg-white/10 rounded-lg p-3 sm:p-4"
+                    className="bg-black/10 dark:bg-white/10 rounded-lg p-3 sm:p-4 shadow-[0px_0px_10px_1px_rgba(38,70,83,0.1)]"
                   >
                     <div className="text-black/60 dark:text-white/60 text-xs sm:text-sm">
                       {questions[index]}
