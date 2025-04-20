@@ -715,12 +715,12 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen overflow-hidden flex items-center justify-center bg-background-white dark:bg-black">
+    <div className="h-screen overflow-hidden flex items-center justify-center bg-background-white dark:bg-background-black">
       <div className="w-full max-w-xl px-4 relative">
         {/* Progress bar - at top of screen */}
-        <div className="fixed top-0 left-0 w-full bg-white/5 dark:bg-black/5 h-1 z-[60]">
+        <div className="fixed top-0 left-0 w-full bg-white/5 dark:bg-background-black/5 h-1 z-[60]">
           <motion.div
-            className="h-full bg-text-green-800 dark:bg-white"
+            className="h-full bg-text-green-800 dark:bg-text-white"
             initial={{ width: 0 }}
             animate={{
               width: `${((currentStep + 1) / questions.length) * 100}%`,
@@ -738,10 +738,10 @@ export default function Home() {
                   key={index}
                   className={`w-2 h-2 rounded-full transition-all duration-300 ${
                     index === currentStep
-                      ? "w-4 bg-text-green-800 dark:bg-white"
+                      ? "w-4 bg-text-green-800 dark:bg-text-white"
                       : index < currentStep
-                      ? "bg-text-green-800/80 dark:bg-white/80"
-                      : "bg-text-green-800/30 dark:bg-white/30"
+                      ? "bg-text-green-800/80 dark:bg-text-white/80"
+                      : "bg-text-green-800/30 dark:bg-text-white/30"
                   }`}
                 />
               ))}
@@ -826,12 +826,12 @@ export default function Home() {
                     key={index}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: index < currentStep ? 1 : 0 }}
-                    className="bg-black/10 dark:bg-white/10 rounded-lg p-3 sm:p-4 shadow-[0px_0px_10px_1px_rgba(38,70,83,0.1)]"
+                    className="bg-black/10 dark:bg-white/5 rounded-lg p-3 sm:p-4 shadow-[0px_0px_10px_1px_rgba(38,70,83,0.1)] dark:shadow-[0px_0px_10px_1px_rgba(255,255,255,0.05)]"
                   >
                     <div className="text-black/60 dark:text-white/60 text-xs sm:text-sm">
                       {questions[index]}
                     </div>
-                    <div className="text-black dark:text-white text-sm sm:text-base">
+                    <div className="text-black dark:text-text-white text-sm sm:text-base">
                       {answer}
                     </div>
                   </motion.div>

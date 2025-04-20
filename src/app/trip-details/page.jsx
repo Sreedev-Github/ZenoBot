@@ -46,16 +46,15 @@ const ActivityCard = ({ title, data, sectionRef }) => {
   // Normalize the data to ensure consistent property order
   const normalizedData = normalizeActivityData(data);
 
-  // Add logging to see what data is coming in
-  // console.log(`Rendering ActivityCard with title: ${title}`, normalizedData);
-
   return (
     <div
       ref={sectionRef}
-      className="bg-activity-background p-4 md:p-8 lg:p-10 rounded-2xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)]"
+      className="bg-activity-background dark:bg-activity-background-dark p-4 md:p-8 lg:p-10 rounded-2xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_1px_-0.5px_rgba(0,0,0,0.06),0px_3px_3px_-1.5px_rgba(0,0,0,0.06),_0px_6px_6px_-3px_rgba(0,0,0,0.06),0px_12px_12px_-6px_rgba(0,0,0,0.06),0px_24px_24px_-12px_rgba(0,0,0,0.06)] dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.05),0px_1px_1px_-0.5px_rgba(255,255,255,0.03),0px_3px_3px_-1.5px_rgba(255,255,255,0.03),_0px_6px_6px_-3px_rgba(255,255,255,0.02),0px_12px_12px_-6px_rgba(255,255,255,0.02),0px_24px_24px_-12px_rgba(255,255,255,0.01)]"
     >
-      <p className="text-text-green-800 text-left font-semibold">{title}</p>
-      <div className="text-muted-gray text-sm md:text-base">
+      <p className="text-text-green-800 dark:text-text-white text-left font-semibold">
+        {title}
+      </p>
+      <div className="text-muted-gray dark:text-muted-gray-dark text-sm md:text-base">
         {Object.keys(normalizedData).length > 0 ? (
           // Only render if we have properties
           Object.entries(normalizedData).map(([key, value], idx) => (
@@ -70,7 +69,9 @@ const ActivityCard = ({ title, data, sectionRef }) => {
           ))
         ) : (
           // Otherwise show a placeholder
-          <p className="italic text-gray-400">Loading activity details...</p>
+          <p className="italic text-gray-400 dark:text-gray-500">
+            Loading activity details...
+          </p>
         )}
       </div>
     </div>
@@ -203,18 +204,18 @@ const DayCard = ({ day, dayNumber }) => {
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: dayNumber * 0.1 }}
-      className="flex flex-col gap-4 justify-center bg-secondary-background-white rounded-3xl shadow-[0_0_35px_0px_rgba(0,0,0,0.25)] p-5 w-full"
+      className="flex flex-col gap-4 justify-center bg-secondary-background-white dark:bg-secondary-background-black rounded-3xl shadow-[0_0_35px_0px_rgba(0,0,0,0.25)] dark:shadow-[0_0_35px_0px_rgba(0,0,0,0.5)] p-5 w-full"
     >
       <div
-        className="relative flex flex-row justify-between items-center p-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+        className="relative flex flex-row justify-between items-center p-2 cursor-pointer rounded-lg transition-colors"
         onClick={toggleActivities}
       >
-        <h1 className="text-center font-medium">
+        <h1 className="text-center font-medium text-text-green-800 dark:text-text-white">
           Day {dayNumber} - {formattedDate}
         </h1>
         <ArrowDownIcon
           ref={arrowRef}
-          className="absolute right-2 md:right-5 text-text-green-800"
+          className="absolute right-2 md:right-5 text-text-green-800 dark:text-text-white"
         />
       </div>
 
@@ -248,7 +249,7 @@ const DayCard = ({ day, dayNumber }) => {
               );
             })
           ) : (
-            <p className="italic text-gray-400 text-center py-4">
+            <p className="italic text-gray-400 dark:text-gray-500 text-center py-4">
               Fetching activies for this day..
             </p>
           )}
@@ -450,17 +451,12 @@ const Page = () => {
         return;
       }
 
-      const { from, to, date, duration, budget } = travelData;
-
-      const query = `I am planning a trip to ${to} from ${from}. The trip will start on ${date} and will last for ${duration} days${
-        budget ? `. My budget is ${budget}` : ""
-      }. Please create a detailed itinerary that focuses only on activities within ${to} and its surrounding areas within the same state/region.`;
-
+      // Send the entire travelData object instead of constructing the query here
       try {
         const response = await fetch("/api/ask-query", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query }),
+          body: JSON.stringify({ travelData }), // Send the entire object
           signal: controller.signal,
         });
 
@@ -482,6 +478,10 @@ const Page = () => {
           const { value, done } = await reader.read();
           if (done) {
             clearTimeout(loadingTimeout);
+
+            // Add logging to verify stream closure
+            console.log("Stream closed properly");
+
             if (isMounted) {
               setLoading(false);
               // Force a final state update to ensure all data is rendered
@@ -545,7 +545,7 @@ const Page = () => {
   }, [travelData]);
 
   return (
-    <div className="relative bg-background-white flex flex-col justify-center items-center w-full min-h-screen px-4">
+    <div className="relative bg-background-white dark:bg-background-black flex flex-col justify-center items-center w-full min-h-screen px-4">
       <Head>
         <title>Travel Itinerary for {travelData?.to || "Destination"}</title>
         <meta
@@ -561,7 +561,7 @@ const Page = () => {
       {/* Debug Panel Toggle Button - check against NODE_ENV value from .env */}
       {process.env.NODE_ENV !== "production" && (
         <motion.button
-          className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-text-green-800 text-white p-2 rounded-l-md shadow-lg z-50"
+          className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-text-green-800 dark:bg-gray-700 text-white p-2 rounded-l-md shadow-lg z-50"
           onClick={() => setShowDebugPanel(!showDebugPanel)}
           whileHover={{ x: -2 }}
           whileTap={{ scale: 0.95 }}
@@ -583,10 +583,10 @@ const Page = () => {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="fixed right-0 top-0 w-full md:w-1/2 lg:w-1/3 h-full bg-white dark:bg-gray-900 shadow-lg z-40 overflow-auto p-4 border-l border-gray-200 dark:border-gray-700"
+              className="fixed right-0 top-0 w-full md:w-1/2 lg:w-1/3 h-full bg-white dark:bg-nav-bg-dark shadow-lg z-40 overflow-auto p-4 border-l border-gray-200 dark:border-gray-700"
             >
-              <div className="flex justify-between items-center mb-4 sticky top-0 bg-white dark:bg-gray-900 pb-2 border-b border-gray-200 dark:border-gray-700">
-                <h2 className="text-xl font-bold text-text-green-800 dark:text-white">
+              <div className="flex justify-between items-center mb-4 sticky top-0 bg-white dark:bg-nav-bg-dark pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-text-green-800 dark:text-text-white">
                   Debug Panel
                 </h2>
                 <button
@@ -599,14 +599,18 @@ const Page = () => {
 
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Travel Data:</h3>
-                  <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto text-xs">
+                  <h3 className="font-semibold mb-2 dark:text-text-white">
+                    Travel Data:
+                  </h3>
+                  <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto text-xs text-black dark:text-gray-300">
                     {JSON.stringify(travelData, null, 2)}
                   </pre>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold mb-2">Raw Response Events:</h3>
+                  <h3 className="font-semibold mb-2 dark:text-text-white">
+                    Raw Response Events:
+                  </h3>
                   <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto max-h-[70vh] text-xs">
                     {debugData.length > 0 ? (
                       debugData.map((item, index) => (
@@ -614,20 +618,22 @@ const Page = () => {
                           key={index}
                           className="mb-2 pb-2 border-b border-gray-200 dark:border-gray-700"
                         >
-                          <div className="font-mono">
+                          <div className="font-mono text-black dark:text-gray-300">
                             {JSON.stringify(item, null, 2)}
                           </div>
                         </div>
                       ))
                     ) : (
-                      <p>No data received yet</p>
+                      <p className="dark:text-gray-400">No data received yet</p>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold mb-2">Processed Data:</h3>
-                  <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto text-xs">
+                  <h3 className="font-semibold mb-2 dark:text-text-white">
+                    Processed Data:
+                  </h3>
+                  <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto text-xs text-black dark:text-gray-300">
                     {JSON.stringify(days, null, 2)}
                   </pre>
                 </div>
@@ -639,7 +645,7 @@ const Page = () => {
 
       {!loading && Object.entries(days).length > 0 && (
         <div className="my-8 md:my-16">
-          <h1 className="text-3xl md:text-5xl text-text-green-800 text-center font-bold mt-20">
+          <h1 className="text-3xl md:text-5xl text-text-green-800 dark:text-text-white text-center font-bold mt-20">
             Your itinerary is here
           </h1>
         </div>
@@ -648,9 +654,11 @@ const Page = () => {
       {/* Main Content Container */}
       <div className="bg-transparent flex flex-col gap-6 md:gap-10 items-center p-5 md:p-10 w-full sm:max-w-[90%] md:max-w-[80%] lg:max-w-[60%]">
         {error ? (
-          <div className="bg-red-100 p-6 rounded-lg mb-8 shadow-md text-center border border-red-300 w-full">
-            <h3 className="text-xl font-bold mb-2 text-red-700">Error</h3>
-            <p className="text-red-700">{error}</p>
+          <div className="bg-red-100 dark:bg-red-900/30 p-6 rounded-lg mb-8 shadow-md text-center border border-red-300 dark:border-red-800 w-full">
+            <h3 className="text-xl font-bold mb-2 text-red-700 dark:text-red-400">
+              Error
+            </h3>
+            <p className="text-red-700 dark:text-red-400">{error}</p>
           </div>
         ) : (
           <>
@@ -660,6 +668,7 @@ const Page = () => {
                 message="Your Travel Itinerary is being planned"
                 submessage="Crafting memorable experiences just for you"
                 color="#2a9d8f"
+                darkMode={true}
               />
             )}
 
@@ -681,7 +690,7 @@ const Page = () => {
             ) : (
               !loading && (
                 <div className="p-10 text-center">
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-gray-400">
                     Waiting for itinerary data to arrive...
                   </p>
                 </div>

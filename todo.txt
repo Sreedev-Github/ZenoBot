@@ -1,11 +1,11 @@
-Fix json response - achieved almost 90% success rate
+Fix json response - achieved almost 90% success rate DONE
 Make the prompt better - DONE
 Add multiple desitination support
 Indian city suporrt & validation - DONE
 Budget - DONE
 Calender support - DONE
 Add another validation for JSON - DONE
-Restrict to 14 days in backend too
+Restrict to 14 days in backend too - Done
 Fix repeatation and incorrect locations being provided, allow the AI to push the user to explore more cities within the state if the trip length is high.
 
 

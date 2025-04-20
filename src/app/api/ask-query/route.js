@@ -12,11 +12,39 @@ export async function POST(request) {
     // Connect to database
     await connectDB();
 
-    const { query } = await request.json();
+    // Extract the travelData object from the request
+    const { travelData } = await request.json();
 
-    if (!query) {
-      return NextResponse.json({ error: "Query is required" }, { status: 400 });
+    if (!travelData) {
+      return NextResponse.json(
+        { error: "Travel data is required" },
+        { status: 400 }
+      );
     }
+
+    // Destructure the travel data
+    const { from, to, date, duration, budget } = travelData;
+
+    // Validate required fields
+    if (!from || !to || !date || !duration) {
+      return NextResponse.json(
+        { error: "Missing required travel information" },
+        { status: 400 }
+      );
+    }
+
+    // Check if the duration exceeds 14 days
+    if (parseInt(duration, 10) > 14) {
+      return NextResponse.json(
+        { error: "Trip duration cannot exceed 14 days" },
+        { status: 400 }
+      );
+    }
+
+    // Construct the query here on the server
+    const query = `I am planning a trip to ${to} from ${from}. The trip will start on ${date} and will last for ${duration} days${
+      budget ? `. My budget is ${budget}` : ""
+    }. Please create a detailed itinerary that focuses only on activities within ${to} and its surrounding areas within the same state/region.`;
 
     const ollama = new Ollama({
       host: process.env.OLLAMA_HOST || "http://localhost:11434",
@@ -38,9 +66,10 @@ export async function POST(request) {
     // Create a session ID for this query
     const sessionId = `session_${Date.now()}`;
 
-    // Store the complete response
+    // Store the complete response - update to include original travel data
     let completeResponse = {
       query,
+      travelData, // Store the original travel data
       timestamp: new Date().toISOString(),
       sessionId,
       rawResponse: "",
@@ -266,40 +295,31 @@ export async function POST(request) {
             responseId: newResponse._id.toString(),
             sessionId,
           });
+
+          // Explicitly end the stream after all processing is complete
+          await writer.close();
         } catch (dbError) {
           console.error("Error saving to MongoDB:", dbError);
           await sendEvent("savedToDb", {
             success: false,
             error: dbError.message,
           });
+          // Close the writer even on error
+          await writer.close();
         }
       } catch (error) {
         console.error("Error in streaming:", error);
         // Only try to write if the writer is not closed
         try {
           await sendEvent("error", { message: error.message });
+          await writer.close();
         } catch (writeError) {
           console.error("Error sending error event:", writeError);
-        }
-      } finally {
-        // Safely close the writer
-        try {
-          // Check if the writer is still writable before attempting to close
-          if (!writer.closed) {
-            try {
-              await writer.close();
-            } catch (e) {
-              // Writer might have been closed already, which is fine
-              // console.log("Note: Writer was already closed");
-            }
-          }
-        } catch (closeError) {
-          console.error("Error checking writer state:", closeError);
         }
       }
     })();
 
-    // Return the stream to the client
+    // Return the stream to the client with an explicit end signal
     return new Response(stream.readable, {
       headers: {
         "Content-Type": "text/event-stream",

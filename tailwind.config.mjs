@@ -59,6 +59,14 @@ const config = {
           800: "#1E2D2F",
         },
         "muted-gray": "#5F5F5F",
+
+        // Dark theme colors
+        "background-black": "#121212",
+        "nav-bg-dark": "#1A1A1A",
+        "secondary-background-black": "#1E1E1E",
+        "activity-background-dark": "#333333",
+        "text-white": "#FFFFFF",
+        "muted-gray-dark": "#B0B0B0",
       },
       borderRadius: {
         lg: "var(--radius)",
