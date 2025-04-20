@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import states from "@/utils/stateCities.json";
 import { format } from "date-fns";
-import { useTravelContext } from "../../context/travelContext";
+import { useTravelContext } from "@/context/travelContext.jsx";
 
 const questions = [
   "Enter your starting location...",
@@ -48,7 +48,7 @@ const budgetOptions = [
   },
 ];
 
-export default function TryPage() {
+export default function Home() {
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState(["", "", "", "", ""]);
   const [inputValue, setInputValue] = useState("");
@@ -715,10 +715,10 @@ export default function TryPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background-white dark:bg-black">
-      <div className="w-full max-w-xl px-4 py-12 relative">
+    <div className="h-screen overflow-hidden flex items-center justify-center bg-background-white dark:bg-black">
+      <div className="w-full max-w-xl px-4 relative">
         {/* Progress bar - at top of screen */}
-        <div className="fixed top-0 left-0 w-full bg-white/5 dark:bg-black/5 h-1">
+        <div className="fixed top-0 left-0 w-full bg-white/5 dark:bg-black/5 h-1 z-[60]">
           <motion.div
             className="h-full bg-text-green-800 dark:bg-white"
             initial={{ width: 0 }}
@@ -729,9 +729,9 @@ export default function TryPage() {
           />
         </div>
 
-        <div className="mt-16 md:mt-24">
+        <div className="mt-8">
           {/* Steps indicator */}
-          <div className="flex justify-center mb-12">
+          <div className="flex justify-center mb-8">
             <div className="flex items-center space-x-2">
               {questions.map((_, index) => (
                 <div

@@ -179,16 +179,12 @@ export default function QueryStreaming() {
     const { section, key, value, dayNumber } = data;
 
     if (!section || !key || value === undefined || !dayNumber) {
+      console.warn("Missing required property data:", data);
       return;
     }
 
     // Normalize section name for consistency
     let sectionKey = section.toLowerCase();
-
-    // Special handling for additionalActivity to match component expectations
-    if (sectionKey === "additionalactivity") {
-      sectionKey = "additionalactivity";
-    }
 
     // Update the property in the day's section
     setDays((prev) => {

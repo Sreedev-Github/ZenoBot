@@ -65,20 +65,17 @@ export async function POST(request) {
         let propertiesInProgress = {};
         let sentProperties = new Set(); // Track what we've already sent
 
-        // Define section markers to watch for
+        // Fix the section marker detection to handle numbered markers sent by the model
         const sectionMarkers = [
-          { marker: '"dayStart": "[DayStart]"', section: "dayStart" },
-          { marker: '"morningStart": "[MorningStart]"', section: "morning" },
+          { marker: '"dayStart":', section: "dayStart" },
+          { marker: '"morningStart":', section: "morning" },
+          { marker: '"afternoonStart":', section: "afternoon" },
+          { marker: '"eveningStart":', section: "evening" },
           {
-            marker: '"afternoonStart": "[AfternoonStart]"',
-            section: "afternoon",
-          },
-          { marker: '"eveningStart": "[EveningStart]"', section: "evening" },
-          {
-            marker: '"additionalActivityStart": "[AdditionalActivityStart]"',
+            marker: '"additionalActivityStart":',
             section: "additionalActivity",
           },
-          { marker: '"dayEnd": "[DayEnd]"', section: "dayEnd" },
+          { marker: '"dayEnd":', section: "dayEnd" },
         ];
 
         // Process each chunk from the AI model
@@ -96,40 +93,22 @@ export async function POST(request) {
               if (buffer.includes(marker) && currentSection !== section) {
                 currentSection = section;
 
+                // Process section start
                 if (section === "dayStart") {
                   currentDay++;
                   // console.log(`Starting new day: ${currentDay}`);
 
-                  // Wait until the buffer contains the full "date" string
+                  // Extract date using a more flexible regex
                   let date = null;
                   const dateRegex = /"date":\s*"([^"]+)"/;
+                  const dateMatch = buffer.match(dateRegex);
 
-                  // Keep processing chunks until the date is found
-                  while (!date) {
-                    const dateMatch = buffer.match(dateRegex);
-
-                    if (dateMatch) {
-                      date = dateMatch[1];
-                    } else {
-                      // Wait for the next chunk to arrive
-                      const { value, done } = await ollamaStream[
-                        Symbol.asyncIterator
-                      ]().next();
-                      if (done) {
-                        break;
-                      }
-
-                      const content = value.message?.content || "";
-                      buffer += content;
-                      completeResponse.rawResponse += content; // Save raw response
-                    }
+                  if (dateMatch) {
+                    date = dateMatch[1];
+                  } else {
+                    date = new Date().toLocaleDateString(); // Fallback to current date
                   }
 
-                  if (!date) {
-                    continue; // Skip processing this day if the date is not found
-                  }
-
-                  // Save to processed data
                   completeResponse.processedData.days[currentDay] = {
                     date,
                     sections: {},
@@ -272,21 +251,27 @@ export async function POST(request) {
           };
 
           // Add additional logging to debug MongoDB save issues
-          console.log("Saving response to MongoDB with session ID:", sessionId);
-          
+          // console.log("Saving response to MongoDB with session ID:", sessionId);
+
           const newResponse = new ResponseModel(responseData);
           await newResponse.save();
-          console.log("Response saved to MongoDB successfully with ID:", newResponse._id);
-          
+          // console.log(
+          //   "Response saved to MongoDB successfully with ID:",
+          //   newResponse._id
+          // );
+
           // Send the MongoDB ID back to the client for reference
-          await sendEvent("savedToDb", { 
-            success: true, 
+          await sendEvent("savedToDb", {
+            success: true,
             responseId: newResponse._id.toString(),
-            sessionId 
+            sessionId,
           });
         } catch (dbError) {
           console.error("Error saving to MongoDB:", dbError);
-          await sendEvent("savedToDb", { success: false, error: dbError.message });
+          await sendEvent("savedToDb", {
+            success: false,
+            error: dbError.message,
+          });
         }
       } catch (error) {
         console.error("Error in streaming:", error);
@@ -305,7 +290,7 @@ export async function POST(request) {
               await writer.close();
             } catch (e) {
               // Writer might have been closed already, which is fine
-              console.log("Note: Writer was already closed");
+              // console.log("Note: Writer was already closed");
             }
           }
         } catch (closeError) {

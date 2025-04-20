@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { ArrowDownIcon, Loader2 } from "lucide-react";
+import {
+  ArrowDownIcon,
+  Loader2,
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  XIcon,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
-import moment from "moment";
 import { useTravelContext } from "../../context/travelContext";
 import Head from "next/head";
+import PushPopLoader from "@/components/PushPopLoader";
 
 // Add a function to normalize the order of properties for display
 const normalizeActivityData = (data) => {
@@ -40,6 +46,9 @@ const ActivityCard = ({ title, data, sectionRef }) => {
   // Normalize the data to ensure consistent property order
   const normalizedData = normalizeActivityData(data);
 
+  // Add logging to see what data is coming in
+  // console.log(`Rendering ActivityCard with title: ${title}`, normalizedData);
+
   return (
     <div
       ref={sectionRef}
@@ -47,16 +56,22 @@ const ActivityCard = ({ title, data, sectionRef }) => {
     >
       <p className="text-text-green-800 text-left font-semibold">{title}</p>
       <div className="text-muted-gray text-sm md:text-base">
-        {Object.entries(normalizedData).map(([key, value], idx) => (
-          <motion.p
-            key={key}
-            initial={{ opacity: 0, x: -5 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: idx * 0.1 }}
-          >
-            {key}: {value}
-          </motion.p>
-        ))}
+        {Object.keys(normalizedData).length > 0 ? (
+          // Only render if we have properties
+          Object.entries(normalizedData).map(([key, value], idx) => (
+            <motion.p
+              key={key}
+              initial={{ opacity: 0, x: -5 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.1 }}
+            >
+              {key}: {value}
+            </motion.p>
+          ))
+        ) : (
+          // Otherwise show a placeholder
+          <p className="italic text-gray-400">Loading activity details...</p>
+        )}
       </div>
     </div>
   );
@@ -178,6 +193,11 @@ const DayCard = ({ day, dayNumber }) => {
   // This ensures we keep the original date format including the correct year
   let formattedDate = day.date || "Date not available";
 
+  // Add logging to see what sections are available
+  useEffect(() => {
+    // console.log(`Rendering DayCard ${dayNumber}:`, day);
+  }, [day, dayNumber]);
+
   return (
     <motion.div
       initial={{ y: 20, opacity: 0 }}
@@ -202,18 +222,36 @@ const DayCard = ({ day, dayNumber }) => {
       <div ref={activitiesRef} className="flex flex-col gap-4">
         {/* Map through sections and render each activity */}
         <AnimatePresence>
-          {Object.entries(day.sections || {}).map(([section, data]) => (
-            <div key={section} ref={setActivityItemRef}>
-              <ActivityCard
-                title={
-                  section.charAt(0).toUpperCase() +
-                  section.slice(1) +
-                  " Activity"
-                }
-                data={data}
-              />
-            </div>
-          ))}
+          {day.sections && Object.keys(day.sections).length > 0 ? (
+            Object.entries(day.sections).map(([sectionName, data]) => {
+              // console.log(`Rendering section ${sectionName} with data:`, data);
+              // Check if the section has any properties
+              if (Object.keys(data).length === 0) {
+                return null;
+              }
+
+              // Format the section title
+              let sectionTitle;
+              if (sectionName.toLowerCase() === "additionalactivity") {
+                sectionTitle = "Alternate Activity";
+              } else {
+                sectionTitle =
+                  sectionName.charAt(0).toUpperCase() +
+                  sectionName.slice(1) +
+                  " Activity";
+              }
+
+              return (
+                <div key={sectionName} ref={setActivityItemRef}>
+                  <ActivityCard title={sectionTitle} data={data} />
+                </div>
+              );
+            })
+          ) : (
+            <p className="italic text-gray-400 text-center py-4">
+              Fetching activies for this day..
+            </p>
+          )}
         </AnimatePresence>
       </div>
     </motion.div>
@@ -230,6 +268,8 @@ const Page = () => {
   const [animatedSections, setAnimatedSections] = useState({}); // Track animated sections
   const [finalizedSections, setFinalizedSections] = useState({});
   const [sectionTimeouts, setSectionTimeouts] = useState({});
+  const [showDebugPanel, setShowDebugPanel] = useState(false);
+  const [debugData, setDebugData] = useState([]);
 
   // Animate loading dots
   useEffect(() => {
@@ -242,6 +282,9 @@ const Page = () => {
 
   // Handler functions for processing streaming events
   const handleEvent = (data) => {
+    // Add to debug data
+    setDebugData((prev) => [...prev, data]);
+
     switch (data.type) {
       case "sectionStart":
         handleSectionStart(data);
@@ -257,69 +300,112 @@ const Page = () => {
     }
   };
 
+  // Update handleSectionStart function
   const handleSectionStart = ({ section, dayNumber, date }) => {
     if (section === "dayStart") {
-      setDays((prev) => ({
-        ...prev,
-        [dayNumber]: { date, sections: {} },
-      }));
-    } else if (section !== "dayStart") {
-      // Track new section for animation
+      setDays((prev) => {
+        // Create a new day entry if it doesn't exist
+        const newDays = { ...prev };
+        newDays[dayNumber] = {
+          date: date || new Date().toLocaleDateString(),
+          sections: { ...(prev[dayNumber]?.sections || {}) },
+        };
+        // console.log("Updated days after dayStart:", newDays);
+        return newDays;
+      });
+    } else if (section !== "dayStart" && section !== "dayEnd") {
+      // Normalize the section name to lowercase
+      const normalizedSection = section.toLowerCase();
+
+      // Track section for animation
       setAnimatedSections((prev) => ({
         ...prev,
-        [`${dayNumber}-${section}`]: true,
+        [`${dayNumber}-${normalizedSection}`]: true,
       }));
 
-      // Initialize the section if not already present
+      // Initialize the section
       setDays((prev) => {
-        const day = prev[dayNumber] || { date: "", sections: {} };
-        if (!day.sections[section]) {
+        if (!prev[dayNumber]) {
+          // If day doesn't exist yet, create it
           return {
             ...prev,
             [dayNumber]: {
-              ...day,
+              date: date || new Date().toLocaleDateString(),
               sections: {
-                ...day.sections,
-                [section]: {},
+                [normalizedSection]: {},
               },
             },
           };
         }
+
+        // If day exists but section doesn't, add it
+        if (!prev[dayNumber].sections[normalizedSection]) {
+          return {
+            ...prev,
+            [dayNumber]: {
+              ...prev[dayNumber],
+              sections: {
+                ...prev[dayNumber].sections,
+                [normalizedSection]: {},
+              },
+            },
+          };
+        }
+
         return prev;
       });
     }
   };
 
+  // Fix the property handler to better handle the incoming data
   const handlePropertyReceived = ({ section, key, value, dayNumber }) => {
+    // Keep this for debugging
+    // console.log(
+    //   `Received property: Day ${dayNumber}, Section ${section}, Key ${key}, Value: ${value}`
+    // );
+
+    // Normalize section name - convert to lowercase and handle special cases
+    let normalizedSection = section.toLowerCase();
+
+    // Special handling for camelCase section names
+    if (normalizedSection === "additionalactivity") {
+      normalizedSection = "additionalactivity";
+    }
+
     // Ignore updates for finalized sections
-    if (finalizedSections[`${dayNumber}-${section}`]) {
+    if (finalizedSections[`${dayNumber}-${normalizedSection}`]) {
+      // console.log(
+      //   `Section ${dayNumber}-${normalizedSection} is already finalized, ignoring update`
+      // );
       return;
     }
 
+    // Update the day's section with the new property
     setDays((prev) => {
-      const day = prev[dayNumber] || { date: "", sections: {} };
-      const sectionData = day.sections[section] || {};
-      if (!sectionData[key] || sectionData[key] === "") {
-        return {
-          ...prev,
-          [dayNumber]: {
-            ...day,
-            sections: {
-              ...day.sections,
-              [section]: {
-                ...sectionData,
-                [key]: value,
-              },
+      // Make sure day exists
+      const existingDay = prev[dayNumber] || { date: "", sections: {} };
+
+      // Make sure section exists
+      const existingSection = existingDay.sections[normalizedSection] || {};
+
+      // Add the property to the section
+      const updatedDays = {
+        ...prev,
+        [dayNumber]: {
+          ...existingDay,
+          sections: {
+            ...existingDay.sections,
+            [normalizedSection]: {
+              ...existingSection,
+              [key]: value,
             },
           },
-        };
-      }
+        },
+      };
 
-      // Return unchanged state if the key already has content
-      return prev;
+      // console.log(`Updated days after property ${key}:`, updatedDays);
+      return updatedDays;
     });
-
-    // Timeout code...
   };
 
   const handleSectionEnd = ({ section, dayNumber }) => {
@@ -345,9 +431,21 @@ const Page = () => {
 
   // Fetch itinerary data
   useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    // Update fetchItinerary to trace the data structure changes
     const fetchItinerary = async () => {
       if (!travelData) {
-        setError("No travel data found. Please go back and fill the form.");
+        setError(
+          <>
+            No travel data found. Please go back and fill the{" "}
+            <a href="/" className="underline font-bold">
+              form
+            </a>
+            .
+          </>
+        );
         setLoading(false);
         return;
       }
@@ -363,6 +461,7 @@ const Page = () => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),
+          signal: controller.signal,
         });
 
         if (!response.ok) {
@@ -376,12 +475,20 @@ const Page = () => {
 
         // Set a timer to remove loading state even if no data comes through
         const loadingTimeout = setTimeout(() => {
-          setLoading(false);
-        }, 3000);
+          if (isMounted) setLoading(false);
+        }, 30000); // 30 seconds maximum loading time
 
         while (true) {
           const { value, done } = await reader.read();
-          if (done) break;
+          if (done) {
+            clearTimeout(loadingTimeout);
+            if (isMounted) {
+              setLoading(false);
+              // Force a final state update to ensure all data is rendered
+              setDays((prevDays) => ({ ...prevDays }));
+            }
+            break;
+          }
 
           const chunk = decoder.decode(value, { stream: true });
           const lines = chunk.split("\n\n");
@@ -390,34 +497,51 @@ const Page = () => {
             if (line.startsWith("data: ")) {
               try {
                 const data = JSON.parse(line.substring(6));
+                // console.log("Received data:", data);
 
-                if (data.error) {
-                  clearTimeout(loadingTimeout);
-                  break;
+                // Handle each event type
+                if (isMounted) {
+                  handleEvent(data);
+
+                  // For debugging, log the current state of days after each event
+                  if (
+                    data.type === "property" ||
+                    data.type === "sectionStart"
+                  ) {
+                    // console.log("Current days state:", days);
+                  }
                 }
-
-                handleEvent(data);
 
                 // Show data as soon as we receive any section data, not just day 1
-                if (data.type === "sectionStart") {
-                  setLoading(false);
+                if (data.type === "sectionStart" && isMounted) {
                   clearTimeout(loadingTimeout);
+                  setLoading(false);
                 }
               } catch (e) {
-                console.error("Error parsing SSE message:", e);
+                console.error(
+                  "Error parsing SSE message:",
+                  e,
+                  line.substring(6)
+                );
               }
             }
           }
         }
       } catch (err) {
-        setError(err.message);
-        console.error("Error fetching data:", err);
-      } finally {
-        setLoading(false);
+        if (err.name !== "AbortError" && isMounted) {
+          setError(err.message);
+          console.error("Error fetching data:", err);
+          setLoading(false);
+        }
       }
     };
 
     fetchItinerary();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [travelData]);
 
   return (
@@ -433,13 +557,96 @@ const Page = () => {
           }.`}
         />
       </Head>
-      <div className="my-8 md:my-16">
-        <h1 className="text-3xl md:text-5xl text-text-green-800 text-center font-bold">
-          Your itinerary is here
-        </h1>
-      </div>
+
+      {/* Debug Panel Toggle Button - check against NODE_ENV value from .env */}
+      {process.env.NODE_ENV !== "production" && (
+        <motion.button
+          className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-text-green-800 text-white p-2 rounded-l-md shadow-lg z-50"
+          onClick={() => setShowDebugPanel(!showDebugPanel)}
+          whileHover={{ x: -2 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {showDebugPanel ? (
+            <ChevronRightIcon size={20} />
+          ) : (
+            <ChevronLeftIcon size={20} />
+          )}
+        </motion.button>
+      )}
+
+      {/* Debug Panel - check against NODE_ENV value from .env */}
+      {process.env.NODE_ENV !== "production" && (
+        <AnimatePresence>
+          {showDebugPanel && (
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="fixed right-0 top-0 w-full md:w-1/2 lg:w-1/3 h-full bg-white dark:bg-gray-900 shadow-lg z-40 overflow-auto p-4 border-l border-gray-200 dark:border-gray-700"
+            >
+              <div className="flex justify-between items-center mb-4 sticky top-0 bg-white dark:bg-gray-900 pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-bold text-text-green-800 dark:text-white">
+                  Debug Panel
+                </h2>
+                <button
+                  onClick={() => setShowDebugPanel(false)}
+                  className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                >
+                  <XIcon size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold mb-2">Travel Data:</h3>
+                  <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto text-xs">
+                    {JSON.stringify(travelData, null, 2)}
+                  </pre>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-2">Raw Response Events:</h3>
+                  <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto max-h-[70vh] text-xs">
+                    {debugData.length > 0 ? (
+                      debugData.map((item, index) => (
+                        <div
+                          key={index}
+                          className="mb-2 pb-2 border-b border-gray-200 dark:border-gray-700"
+                        >
+                          <div className="font-mono">
+                            {JSON.stringify(item, null, 2)}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p>No data received yet</p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold mb-2">Processed Data:</h3>
+                  <pre className="bg-gray-100 dark:bg-gray-800 p-3 rounded-md overflow-auto text-xs">
+                    {JSON.stringify(days, null, 2)}
+                  </pre>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
+
+      {!loading && Object.entries(days).length > 0 && (
+        <div className="my-8 md:my-16">
+          <h1 className="text-3xl md:text-5xl text-text-green-800 text-center font-bold mt-20">
+            Your itinerary is here
+          </h1>
+        </div>
+      )}
+
       {/* Main Content Container */}
-      <div className="bg-white flex flex-col gap-6 md:gap-10 items-center p-5 md:p-10 w-full sm:max-w-[90%] md:max-w-[80%] lg:max-w-[60%] rounded-3xl shadow-[0px_0px_20px_5px_rgba(38,70,83,0.2)]">
+      <div className="bg-transparent flex flex-col gap-6 md:gap-10 items-center p-5 md:p-10 w-full sm:max-w-[90%] md:max-w-[80%] lg:max-w-[60%]">
         {error ? (
           <div className="bg-red-100 p-6 rounded-lg mb-8 shadow-md text-center border border-red-300 w-full">
             <h3 className="text-xl font-bold mb-2 text-red-700">Error</h3>
@@ -447,34 +654,44 @@ const Page = () => {
           </div>
         ) : (
           <>
-            {/* Show loading indicator at the top if still loading */}
+            {/* Show Push Pop loader while loading */}
             {loading && (
-              <div className="text-center text-gray-800 text-xl sm:text-2xl font-semibold py-6 flex flex-col items-center">
-                <div className="mb-4">
-                  Your Travel Itinerary is being planned{dots}
-                </div>
-                <Loader2 className="animate-spin h-8 w-8 text-text-green-800" />
-              </div>
+              <PushPopLoader
+                message="Your Travel Itinerary is being planned"
+                submessage="Crafting memorable experiences just for you"
+                color="#2a9d8f"
+              />
             )}
 
-            {/* Always show days, even if still loading more */}
-            {Object.entries(days).length > 0 ? (
-              Object.entries(days).map(([dayNumber, day]) => (
-                <DayCard
-                  key={dayNumber}
-                  day={day}
-                  dayNumber={parseInt(dayNumber)}
-                />
-              ))
-            ) : loading ? null : ( // Don't show anything else if loading and no days yet
-              <div className="text-center text-gray-800 text-xl py-8">
-                No itinerary data available yet. Please wait a moment...
+            {/* Always show days when available, even during loading */}
+            {Object.keys(days).length > 0 ? (
+              <div className="w-full space-y-6">
+                {Object.entries(days)
+                  .sort(
+                    ([aKey, _a], [bKey, _b]) => parseInt(aKey) - parseInt(bKey)
+                  )
+                  .map(([dayNumber, day]) => (
+                    <DayCard
+                      key={dayNumber}
+                      day={day}
+                      dayNumber={parseInt(dayNumber)}
+                    />
+                  ))}
               </div>
+            ) : (
+              !loading && (
+                <div className="p-10 text-center">
+                  <p className="text-gray-600">
+                    Waiting for itinerary data to arrive...
+                  </p>
+                </div>
+              )
             )}
           </>
         )}
       </div>
-      <div className="h-10 md:h-20"></div> {/* Bottom spacing */}
+
+      <div className="h-10 md:h-20"></div>
     </div>
   );
 };

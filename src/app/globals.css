@@ -128,3 +128,150 @@ h1 {
     @apply bg-background text-foreground;
   }
 }
+
+/* Push-Pop Loader Animation */
+.push-pop {
+  --duration: 0.85;
+  height: 100px;
+  width: 100px;
+  position: relative;
+  overflow: hidden;
+}
+
+.push-pop > div:nth-of-type(1) {
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  animation: push-pop-slide calc(var(--duration) * 1s) infinite alternate
+    ease-in-out;
+  transform: translate(0, -100%);
+  top: 100%;
+  left: 0;
+}
+
+.push-pop > div:nth-of-type(1):after {
+  animation: push-pop-flip calc(var(--duration) * 1s) infinite alternate
+    ease-in-out;
+  background: var(--primary-color, #2a9d8f);
+  content: "";
+  height: 100%;
+  position: absolute;
+  width: 100%;
+}
+
+.push-pop > div:nth-of-type(2) {
+  background: var(--primary-color, #2a9d8f);
+  height: 30px;
+  left: 50%;
+  position: absolute;
+  top: 100%;
+  transform: translate(-50%, -100%);
+  width: 20px;
+}
+
+.push-pop:after,
+.push-pop:before {
+  animation: push-pop-pushed calc(var(--duration) * 1s) alternate infinite ease;
+  background: var(--primary-color, #2a9d8f);
+  bottom: 0;
+  content: "";
+  height: 40px;
+  position: absolute;
+  width: 20px;
+}
+
+.push-pop:before {
+  animation: push-pop-pushed calc(var(--duration) * 1s) alternate-reverse
+    infinite ease;
+  left: 0;
+}
+
+.push-pop:after {
+  right: 0;
+}
+
+@keyframes push-pop-pushed {
+  0%,
+  72.5% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0, 100%);
+  }
+}
+
+@keyframes push-pop-flip {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(0, -80px) rotate(90deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(180deg);
+  }
+}
+
+@keyframes push-pop-slide {
+  to {
+    transform: translate(0, -100%) translate(80px, 0);
+  }
+}
+
+/* Push-Pop Loader Container */
+.push-pop-loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* Custom loader text */
+.push-pop-loader-text {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #264653;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.push-pop-loader-subtext {
+  font-size: 0.9rem;
+  color: #2a9d8f;
+  animation: text-fade 2s ease-in-out infinite;
+  text-align: center;
+}
+
+.loading-dots::after {
+  content: "";
+  animation: loading-dots 1.5s infinite;
+}
+
+@keyframes loading-dots {
+  0% {
+    content: ".";
+  }
+  25% {
+    content: "..";
+  }
+  50% {
+    content: "...";
+  }
+  75% {
+    content: "..";
+  }
+  100% {
+    content: ".";
+  }
+}
+
+@keyframes text-fade {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
