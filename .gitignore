@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# random files that I want to avoid
+todo.txt
+examples.txt
+api-docs_and_resposes/
+Streaming.md
