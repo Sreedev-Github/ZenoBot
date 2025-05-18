@@ -83,7 +83,7 @@ export async function POST(request) {
       try {
         // Stream from ollama
         const ollamaStream = await ollama.chat({
-          model: "zenobot01",
+          model: "zenobot",
           messages: [{ role: "user", content: query }],
           stream: true,
         });
